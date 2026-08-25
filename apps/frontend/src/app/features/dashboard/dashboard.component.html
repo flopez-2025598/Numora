@@ -1,0 +1,114 @@
+<div class="dashboard-shell">
+  <header class="dashboard-header">
+    <button
+      type="button"
+      class="menu-toggle"
+      [attr.aria-label]="isMenuOpen ? 'Cerrar menú' : 'Abrir menú'"
+      (click)="toggleMenu()"
+    >
+      <img
+        src="/despliegue.png"
+        alt=""
+        class="menu-icon"
+        [class.menu-icon--open]="isMenuOpen"
+      />
+    </button>
+    <div class="brand">
+      <img src="/numora-logo.png" alt="NUMORA" class="brand-logo" />
+    </div>
+    <h1 class="page-title">Dashboard</h1>
+  </header>
+
+  <div class="dashboard-body">
+    <aside class="sidebar" *ngIf="isMenuOpen">
+      <p class="sidebar-welcome" *ngIf="user">Bienvenido, {{ user.fullName }}</p>
+
+      <nav class="sidebar-nav">
+        <section class="nav-group">
+          <h2 class="nav-group-title">Principal</h2>
+          <ul>
+            <li class="nav-item nav-item--active">Resumen</li>
+          </ul>
+        </section>
+
+        <section class="nav-group">
+          <h2 class="nav-group-title">Transacciones</h2>
+          <ul>
+            <li class="nav-item nav-item--disabled">Ingresos</li>
+            <li class="nav-item nav-item--disabled">Gastos</li>
+            <li class="nav-item nav-item--disabled">Presupuestos</li>
+          </ul>
+        </section>
+
+        <section class="nav-group">
+          <h2 class="nav-group-title">Ahorro e impuestos</h2>
+          <ul>
+            <li class="nav-item nav-item--disabled">Impuestos</li>
+            <li class="nav-item nav-item--disabled">Fondo de emergencia</li>
+          </ul>
+        </section>
+
+        <section class="nav-group">
+          <h2 class="nav-group-title">Análisis</h2>
+          <ul>
+            <li class="nav-item nav-item--disabled">Reportes</li>
+          </ul>
+        </section>
+      </nav>
+
+      <button type="button" class="logout-btn" (click)="logout()">Cerrar sesión</button>
+    </aside>
+
+    <main class="dashboard-main">
+      <section *ngIf="isLoading" class="state">
+        <span class="spinner"></span>
+        <p>Verificando tu sesión...</p>
+      </section>
+
+      <section *ngIf="errorMessage" class="error-state">
+        <p>{{ errorMessage }}</p>
+        <button type="button" (click)="loadUser()">Reintentar</button>
+      </section>
+
+      <section *ngIf="!isLoading && !errorMessage" class="cards-grid">
+        <article class="card card--expenses">
+          <p class="card-tag">Gastos mensuales</p>
+          <p class="card-placeholder">Monto y comparación: Etapa 6</p>
+          <div class="chart-placeholder chart-placeholder--donut">
+            <span>Gráfica en la Etapa 7</span>
+          </div>
+        </article>
+
+        <article class="card card--percentage">
+          <h3>Porcentaje mensual gastado</h3>
+          <p class="card-placeholder">Se conectará en la Etapa 6</p>
+        </article>
+
+        <article class="card card--bar">
+          <h3>Ingresos vs. Gastos</h3>
+          <div class="chart-placeholder chart-placeholder--bars">
+            <span>Gráfica en la Etapa 7</span>
+          </div>
+        </article>
+
+        <article class="card card--income-fund">
+          <div class="stat-block">
+            <h3>Ingresos mensuales</h3>
+            <p class="card-placeholder">Se conectará en la Etapa 6</p>
+          </div>
+          <div class="stat-block">
+            <h3>Fondo de emergencia</h3>
+            <p class="card-placeholder">Se conectará en la Etapa 6</p>
+          </div>
+        </article>
+
+        <article class="card card--trend">
+          <h3>Tendencia mensual</h3>
+          <div class="chart-placeholder chart-placeholder--line">
+            <span>Gráfica en la Etapa 7</span>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+</div>

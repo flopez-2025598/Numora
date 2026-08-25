@@ -1,11 +1,11 @@
 packages:
   - 'apps/*'
 allowBuilds:
-  '@parcel/watcher': set this to true or false
+  '@parcel/watcher': true
   '@prisma/engines': true
   bcrypt: false
   esbuild: true
-  lmdb: set this to true or false
-  msgpackr-extract: set this to true or false
+  lmdb: true
+  msgpackr-extract: true
   prisma: true
 onlyBuiltDependencies: esbuild
