@@ -1,0 +1,323 @@
+// Etapa 3: identidad visual de NUMORA según la maqueta del PDF.
+// Fondo oscuro con degradado (negro/índigo -> azul/morado), tarjetas de
+// vidrio semitransparente, texto blanco, acentos en cian.
+
+$bg-start: #05061a;
+$bg-mid: #161b4d;
+$bg-end: #3a2b7a;
+$cyan: #2dd4ee;
+$card-bg: rgba(255, 255, 255, 0.06);
+$card-border: rgba(255, 255, 255, 0.12);
+
+.dashboard-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(45, 212, 238, 0.14), transparent 40%),
+    radial-gradient(circle at 90% 85%, rgba(120, 70, 220, 0.22), transparent 45%),
+    linear-gradient(135deg, $bg-start 0%, $bg-mid 45%, $bg-end 100%);
+  color: #fff;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 32px;
+}
+
+.menu-toggle {
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.menu-icon {
+  width: 44px;
+  height: auto;
+  // El PNG tiene fondo negro sólido; "screen" hace que el negro se
+  // vuelva invisible sobre un fondo oscuro y solo se vea el brillo azul.
+  mix-blend-mode: screen;
+  transition: transform 0.25s ease;
+  margin-left: 50px;
+}
+
+.menu-icon--open {
+  transform: rotate(180deg);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  height: 56px;
+  width: auto;
+}
+
+.page-title {
+  margin: 0 0 0 auto;
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.dashboard-body {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+  padding: 0 24px 32px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 260px;
+  padding: 24px 20px;
+  border: 1px solid $card-border;
+  border-radius: 20px;
+  background: $card-bg;
+  backdrop-filter: blur(20px);
+}
+
+.sidebar-welcome {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.nav-group-title {
+  margin: 0 0 8px;
+  color: $cyan;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.nav-group ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-item {
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.92rem;
+}
+
+.nav-item--active {
+  background: rgba(45, 212, 238, 0.16);
+  color: #fff;
+  font-weight: 700;
+}
+
+.nav-item--disabled {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.logout-btn {
+  margin-top: auto;
+  padding: 12px;
+  border: 1px solid $card-border;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(45, 212, 238, 0.5);
+}
+
+.dashboard-main {
+  flex: 1;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, minmax(200px, auto));
+  grid-template-areas:
+    "expenses percentage bar"
+    "expenses fund trend";
+  gap: 18px;
+}
+
+.card--expenses { grid-area: expenses; }
+.card--percentage { grid-area: percentage; }
+.card--bar { grid-area: bar; }
+.card--income-fund { grid-area: fund; }
+.card--trend { grid-area: trend; }
+
+.card {
+  padding: 22px;
+  border: 1px solid $card-border;
+  border-radius: 18px;
+  background: $card-bg;
+  backdrop-filter: blur(20px);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  border-color: rgba(45, 212, 238, 0.4);
+  transform: translateY(-2px);
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  color: #fff;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.card-placeholder {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.card-tag {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 6px 14px;
+  border: 1px solid $card-border;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.card--income-fund {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  justify-content: center;
+}
+
+.stat-block + .stat-block {
+  padding-top: 18px;
+  border-top: 1px solid $card-border;
+}
+
+.chart-placeholder {
+  display: grid;
+  place-items: center;
+  margin-top: 14px;
+  border: 1px dashed $card-border;
+  border-radius: 14px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.78rem;
+  font-style: italic;
+  text-align: center;
+}
+
+.chart-placeholder--donut {
+  aspect-ratio: 1;
+  max-width: 160px;
+  margin-inline: auto;
+  border-radius: 50%;
+}
+
+.chart-placeholder--bars,
+.chart-placeholder--line {
+  min-height: 140px;
+}
+
+.state,
+.error-state {
+  padding: 60px;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+}
+
+.error-state {
+  border: 1px solid rgba(255, 100, 120, 0.3);
+  border-radius: 18px;
+  background: rgba(255, 80, 100, 0.08);
+}
+
+.error-state button {
+  margin-top: 12px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.spinner {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: $cyan;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive básico (el ajuste fino completo es la Etapa 8).
+@media (max-width: 900px) {
+  .dashboard-body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: auto;
+  }
+
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+      "expenses percentage"
+      "expenses bar"
+      "fund trend";
+  }
+}
+
+@media (max-width: 560px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "expenses"
+      "percentage"
+      "bar"
+      "fund"
+      "trend";
+  }
+}
