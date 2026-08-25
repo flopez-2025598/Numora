@@ -1,24 +1,45 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
-import { DashboardService } from '../../core/dashboard/dashboard.service';
-import type { DashboardSummary } from '../../core/dashboard/dashboard.model';
-import { formatGuatemalanCurrency, formatPeriod } from '../../core/dashboard/dashboard.utils';
+import type { AuthUser } from '../../core/auth/auth.model';
 
 @Component({
-  selector: 'app-dashboard', standalone: true, imports: [CommonModule, RouterLink],
-  template: `<main class="dashboard-shell"><header class="dashboard-header"><div><p class="eyebrow">Resumen financiero</p><h1>Dashboard</h1><p class="welcome">Bienvenido, {{ userName }}</p></div><button type="button" class="logout-btn" (click)="logout()">Cerrar sesión</button></header><nav class="dashboard-nav" aria-label="Secciones principales"><a routerLink="/income">Ingresos</a><a routerLink="/expenses">Gastos</a><a routerLink="/emergency-fund">Fondo de emergencia</a><a routerLink="/reports">Reportes</a><a routerLink="/taxes">Impuestos</a><a *ngIf="isAdmin" routerLink="/admin">Administración</a></nav><section *ngIf="isLoading" class="state"><span class="spinner"></span><p>Cargando información...</p></section><section *ngIf="errorMessage" class="error-state"><p>{{ errorMessage }}</p><button type="button" (click)="retryLoad()">Reintentar</button></section><ng-container *ngIf="!isLoading && !errorMessage && data"><section class="period-info"><span>Período seleccionado</span><p>{{ formattedPeriod }}</p></section><section class="metrics-grid"><article class="metric-card"><p>Ingresos del mes</p><strong>{{ formatCurrency(data.income.total) }}</strong></article><article class="metric-card"><p>Gastos del mes</p><strong>{{ formatCurrency(data.expenses.total) }}</strong></article><article class="metric-card"><p>Balance disponible</p><strong>{{ formatCurrency(data.balance.available) }}</strong></article><article class="metric-card"><p>Fondo de emergencia</p><strong>{{ formatCurrency(data.emergencyFund.balance) }}</strong></article></section></ng-container></main>`,
-  styles: [`:host{display:block;min-height:100vh;background:linear-gradient(135deg,#fff 0%,#f8fbff 52%,#edf5ff 100%);color:#16233d;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.dashboard-shell{max-width:1240px;min-height:100vh;margin:0 auto;padding:46px 32px 70px}.dashboard-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding-bottom:28px;border-bottom:1px solid #e6edf7}.eyebrow{margin:0 0 9px;color:#3673b8;font-size:.76rem;font-weight:750;letter-spacing:.11em;text-transform:uppercase}h1{margin:0;color:#10213d;font-size:2.4rem;letter-spacing:-.045em}.welcome{margin:9px 0 0;color:#61728d}.logout-btn{padding:11px 16px;border:1px solid #d5e2f2;border-radius:8px;background:linear-gradient(135deg,#173c6b,#245a9c);box-shadow:0 5px 12px rgba(28,73,126,.14);color:#fff;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}.logout-btn:hover{filter:brightness(1.06)}.dashboard-nav{display:flex;flex-wrap:wrap;gap:10px;margin:27px 0}.dashboard-nav a{padding:10px 14px;border:1px solid #d9e7f6;border-radius:8px;background:linear-gradient(145deg,#fff,#f4f9ff);color:#245b9f;font-size:.92rem;font-weight:650;text-decoration:none}.dashboard-nav a:hover{border-color:#adcdec;background:#f0f7ff}.period-info{margin:30px 0 20px;padding:18px 21px;border:1px solid #e6edf5;border-radius:12px;background:linear-gradient(110deg,#fff,#f7fbff);box-shadow:0 8px 24px rgba(39,84,135,.05)}.period-info span{display:block;color:#75849b;font-size:.76rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase}.period-info p{margin:7px 0 0;color:#354a68;font-weight:600}.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.metric-card{position:relative;overflow:hidden;padding:23px 21px;border:1px solid #e1eaf4;border-radius:12px;background:linear-gradient(145deg,#fff 10%,#f4f9ff 100%);box-shadow:0 10px 24px rgba(30,72,119,.07)}.metric-card:before{position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#478bcf,#8bc2ee);content:''}.metric-card p{margin:0;color:#657791;font-size:.84rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}.metric-card strong{display:block;margin-top:14px;color:#152d4d;font-size:1.55rem;letter-spacing:-.035em}.state{display:grid;justify-items:center;gap:12px;padding:90px;color:#697993}.spinner{width:30px;height:30px;border:3px solid #dcecf9;border-top-color:#377ac0;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.error-state{margin-top:30px;padding:24px;border-radius:12px;background:#fff5f5;color:#a53e48}.error-state p{margin-top:0}.error-state button{padding:9px 13px;border:0;border-radius:7px;background:#a53e48;color:#fff;font:inherit;font-weight:700;cursor:pointer}@media(max-width:950px){.metrics-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.dashboard-shell{padding:30px 18px 48px}.dashboard-header{align-items:stretch;flex-direction:column}h1{font-size:2rem}.logout-btn{align-self:flex-start}.metrics-grid{grid-template-columns:1fr}.period-info{margin-top:24px}}`],
+  selector: 'app-dashboard',
+  standalone: true,
+  imports: [CommonModule],
+  template: `<main class="dashboard-shell"><header class="dashboard-header"><div><p class="eyebrow">Numora</p><h1>Dashboard</h1><p class="welcome" *ngIf="user">Bienvenido, {{ user.fullName }}</p></div><button type="button" class="logout-btn" (click)="logout()">Cerrar sesión</button></header><section *ngIf="isLoading" class="state"><span class="spinner"></span><p>Verificando tu sesión...</p></section><section *ngIf="errorMessage" class="error-state"><p>{{ errorMessage }}</p><button type="button" (click)="loadUser()">Reintentar</button></section></main>`,
+  styles: [`:host{display:block;min-height:100vh;background:linear-gradient(135deg,#fff 0%,#f8fbff 52%,#edf5ff 100%);color:#16233d;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.dashboard-shell{max-width:1240px;min-height:100vh;margin:0 auto;padding:46px 32px 70px}.dashboard-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding-bottom:28px;border-bottom:1px solid #e6edf7}.eyebrow{margin:0 0 9px;color:#3673b8;font-size:.76rem;font-weight:750;letter-spacing:.11em;text-transform:uppercase}h1{margin:0;color:#10213d;font-size:2.4rem;letter-spacing:-.045em}.welcome{margin:9px 0 0;color:#61728d}.logout-btn{padding:11px 16px;border:1px solid #d5e2f2;border-radius:8px;background:linear-gradient(135deg,#173c6b,#245a9c);box-shadow:0 5px 12px rgba(28,73,126,.14);color:#fff;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}.logout-btn:hover{filter:brightness(1.06)}.state{display:grid;justify-items:center;gap:12px;padding:90px;color:#697993}.spinner{width:30px;height:30px;border:3px solid #dcecf9;border-top-color:#377ac0;border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}.error-state{margin-top:30px;padding:24px;border-radius:12px;background:#fff5f5;color:#a53e48}.error-state p{margin-top:0}.error-state button{padding:9px 13px;border:0;border-radius:7px;background:#a53e48;color:#fff;font:inherit;font-weight:700;cursor:pointer}@media(max-width:600px){.dashboard-shell{padding:30px 18px 48px}.dashboard-header{align-items:stretch;flex-direction:column}h1{font-size:2rem}.logout-btn{align-self:flex-start}}`],
 })
 export class DashboardComponent implements OnInit {
-  private readonly authService = inject(AuthService); private readonly dashboardService = inject(DashboardService); private readonly cdr = inject(ChangeDetectorRef);
-  protected data: DashboardSummary | null = null; protected isLoading = false; protected errorMessage = ''; protected formattedPeriod = '';
-  protected get userName(): string { return this.authService.getCurrentUser()?.fullName ?? 'Usuario'; }
-  protected get isAdmin(): boolean { return this.authService.getCurrentUser()?.role === 'ADMIN'; }
-  ngOnInit(): void { this.loadDashboard(); }
-  protected formatCurrency(value: string | number): string { return formatGuatemalanCurrency(value); }
-  protected retryLoad(): void { this.loadDashboard(); }
-  protected logout(): void { this.authService.logout('Cerraste sesión correctamente.'); }
-  private loadDashboard(): void { this.isLoading = true; this.errorMessage = ''; this.data = null; this.formattedPeriod = ''; this.dashboardService.getSummary().subscribe({ next: summary => { this.data = summary; this.formattedPeriod = formatPeriod(summary.period.from, summary.period.to); this.isLoading = false; this.cdr.detectChanges(); }, error: (err: unknown) => { const e = err as { error?: { error?: string } }; this.errorMessage = `No se pudo cargar el dashboard: ${e.error?.error ?? 'Error desconocido'}`; this.isLoading = false; this.cdr.detectChanges(); } }); }
+  private readonly authService = inject(AuthService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  protected user: AuthUser | null = null;
+  protected isLoading = false;
+  protected errorMessage = '';
+
+  ngOnInit(): void {
+    this.loadUser();
+  }
+
+  protected loadUser(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.authService.fetchCurrentUser().subscribe({
+      next: (user) => {
+        this.user = user;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+      error: (err: unknown) => {
+        const e = err as { error?: { error?: string } };
+        this.errorMessage = `No se pudo verificar tu sesión: ${e.error?.error ?? 'Error desconocido'}`;
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  protected logout(): void {
+    this.authService.logout('Cerraste sesión correctamente.');
+  }
 }

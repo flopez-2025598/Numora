@@ -82,4 +82,18 @@ export const authService = {
       token,
     };
   },
+
+  async me(userId: number): Promise<AuthUser> {
+    const user = await authRepository.findById(userId);
+    if (!user) {
+      throw new Error('USER_NOT_FOUND');
+    }
+
+    return {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+    };
+  },
 };

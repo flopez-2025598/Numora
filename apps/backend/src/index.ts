@@ -1,13 +1,12 @@
 import 'dotenv/config';
 import express from 'express';
 import { authRoutes } from './auth/auth.routes.js';
-import { usersRoutes } from './users/users.routes.js';
-import { incomeRoutes } from './income/income.routes.js';
-import { expensesRoutes } from './expenses/expenses.routes.js';
-import { taxesRoutes } from './taxes/taxes.routes.js';
-import { emergencyFundRoutes } from './emergency-fund/emergency-fund.routes.js';
-import { dashboardRoutes } from './dashboard/dashboard.routes.js';
-import { reportsRoutes } from './reports/reports.routes.js';
+
+// Módulos adelantados (income, expenses, taxes, emergency-fund, dashboard,
+// reports, users) quedan desconectados temporalmente mientras el proyecto
+// vuelve a una base mínima de Login + Dashboard. El código sigue intacto
+// en sus carpetas dentro de src/ y se puede reconectar reactivando estos
+// imports y sus app.use() correspondientes.
 
 const app = express();
 const port = 3000;
@@ -34,17 +33,10 @@ app.use((req, res, next) => {
 });
 
 app.get('/', (req, res) => {
-    res.json({ message: 'Finova Finance backend esta corriendo' });
+    res.json({ message: 'Numora backend esta corriendo' });
 });
 
 app.use('/auth', authRoutes);
-app.use('/users', usersRoutes);
-app.use('/income', incomeRoutes);
-app.use('/expenses', expensesRoutes);
-app.use('/taxes', taxesRoutes);
-app.use('/emergency-fund', emergencyFundRoutes);
-app.use('/dashboard', dashboardRoutes);
-app.use('/reports', reportsRoutes);
 
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);

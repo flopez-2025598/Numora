@@ -11,8 +11,8 @@ import type { AuthUser, LoginRequest, LoginResponse, RegisterRequest, RegisterRe
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly tokenKey = 'finova.token';
-  private readonly userKey = 'finova.user';
+  private readonly tokenKey = 'numora.token';
+  private readonly userKey = 'numora.user';
   private logoutTimer: ReturnType<typeof setTimeout> | null = null;
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
@@ -23,6 +23,12 @@ export class AuthService {
 
   register(payload: RegisterRequest): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${API_BASE_URL}/auth/register`, payload);
+  }
+
+  fetchCurrentUser(): Observable<AuthUser> {
+    return this.http.get<AuthUser>(`${API_BASE_URL}/auth/me`).pipe(
+      tap((user) => localStorage.setItem(this.userKey, JSON.stringify(user))),
+    );
   }
 
   isAuthenticated(): boolean {

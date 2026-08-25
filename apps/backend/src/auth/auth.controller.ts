@@ -49,6 +49,15 @@ export const authController = {
       return res.status(401).json({ error: 'No autenticado' });
     }
 
-    return res.status(200).json({ userId: req.auth.userId, role: req.auth.role });
+    try {
+      const user = await authService.me(req.auth.userId);
+      return res.status(200).json(user);
+    } catch (err) {
+      if (err instanceof Error && err.message === 'USER_NOT_FOUND') {
+        return res.status(401).json({ error: 'No autenticado' });
+      }
+      console.error(err);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+    }
   },
 };

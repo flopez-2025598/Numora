@@ -5,6 +5,10 @@ export const authRepository = {
     return prisma.user.findUnique({ where: { email } });
   },
 
+  findById(id: number) {
+    return prisma.user.findUnique({ where: { id } });
+  },
+
   create(data: { fullName: string; email: string; passwordHash: string }) {
     return prisma.user.create({ data });
   },
