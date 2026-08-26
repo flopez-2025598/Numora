@@ -74,11 +74,11 @@ export class AuthService {
     }
   }
 
-  logout(message?: string): void {
+  logout(message?: string, type: 'success' | 'error' = 'error'): void {
     this.clearSession();
 
     void this.router.navigate(['/login'], {
-      state: message ? { sessionMessage: message } : undefined,
+      state: message ? { sessionMessage: message, sessionType: type } : undefined,
     });
   }
 
