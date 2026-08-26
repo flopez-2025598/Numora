@@ -1,0 +1,365 @@
+<div class="numora-login" [class.is-dark]="darkCard">
+  <div class="nl-shell">
+
+    <!-- Capa de símbolos matemáticos flotantes (decorativa) -->
+    <div class="nl-math" aria-hidden="true">
+      <span *ngFor="let s of symbols" [style]="s.style">{{ s.t }}</span>
+      <i class="nl-dot" *ngFor="let d of dots" [style]="d.style"></i>
+    </div>
+
+    <!-- ===================== HERO ===================== -->
+    <section class="nl-hero">
+      <div class="nl-brand">
+        <svg class="nl-logo-mark" viewBox="265 200 462 465" fill="none" aria-label="NUMORA">
+          <defs>
+            <linearGradient id="nlDown" x1="0" y1="0" x2="0.35" y2="1">
+              <stop offset="0%" stop-color="#3184ff" />
+              <stop offset="55%" stop-color="#1a5be6" />
+              <stop offset="100%" stop-color="#123ec4" />
+            </linearGradient>
+            <linearGradient id="nlUp" x1="0" y1="1" x2="0.35" y2="0">
+              <stop offset="0%" stop-color="#0f9fb0" />
+              <stop offset="45%" stop-color="#22c9cf" />
+              <stop offset="100%" stop-color="#45e8e2" />
+            </linearGradient>
+            <linearGradient id="nlSlab" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="60%" stop-color="#f4f8fd" />
+              <stop offset="100%" stop-color="#c9d6e8" />
+            </linearGradient>
+            <linearGradient id="nlStripeB" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#3d88ff" />
+              <stop offset="100%" stop-color="#1a5be6" />
+            </linearGradient>
+            <linearGradient id="nlStripeT" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#45e8e2" />
+              <stop offset="100%" stop-color="#14a8b6" />
+            </linearGradient>
+          </defs>
+
+          <g class="nl-arrow-down">
+            <rect x="309" y="228" width="65" height="350" fill="url(#nlDown)" />
+            <polygon points="273,578 410,578 341.5,657" fill="url(#nlDown)" />
+          </g>
+
+          <g class="nl-arrow-up">
+            <rect x="621" y="291" width="61" height="365" fill="url(#nlUp)" />
+            <polygon points="586,291 718,291 652,212" fill="url(#nlUp)" />
+          </g>
+
+          <polygon points="316,228 412,228 716.0,655 620.0,655" fill="url(#nlSlab)" />
+
+          <g class="nl-streaks">
+            <polygon points="357.5,332.0 370.5,332.0 447.4,440.0 434.4,440.0" fill="#050d20" />
+            <polygon points="381.2,340.0 394.2,340.0 471.1,448.0 458.1,448.0" fill="#050d20" />
+            <polygon points="404.9,348.0 417.9,348.0 494.8,456.0 481.8,456.0" fill="#050d20" />
+            <polygon points="362.2,335.0 370.2,335.0 442.8,437.0 434.8,437.0" fill="url(#nlStripeB)" />
+            <polygon points="385.9,343.0 393.9,343.0 466.5,445.0 458.5,445.0" fill="url(#nlStripeB)" />
+            <polygon points="409.6,351.0 417.6,351.0 490.2,453.0 482.2,453.0" fill="url(#nlStripeB)" />
+            <polygon points="545.7,439.0 558.7,439.0 635.6,547.0 622.6,547.0" fill="#050d20" />
+            <polygon points="569.4,447.0 582.4,447.0 659.3,555.0 646.3,555.0" fill="#050d20" />
+            <polygon points="593.1,455.0 606.1,455.0 683.0,563.0 670.0,563.0" fill="#050d20" />
+            <polygon points="550.4,442.0 558.4,442.0 631.0,544.0 623.0,544.0" fill="url(#nlStripeT)" />
+            <polygon points="574.1,450.0 582.1,450.0 654.7,552.0 646.7,552.0" fill="url(#nlStripeT)" />
+            <polygon points="597.8,458.0 605.8,458.0 678.4,560.0 670.4,560.0" fill="url(#nlStripeT)" />
+          </g>
+
+          <g fill="#050d20">
+            <rect x="485" y="453" width="14" height="22" />
+            <rect x="505" y="430" width="14" height="45" />
+            <rect x="525" y="405" width="14" height="70" />
+          </g>
+
+          <g class="nl-calc" fill="#050d20" stroke="#2ccfd6" stroke-width="7">
+            <rect x="626" y="524" width="94" height="132" rx="12" />
+            <rect x="640" y="539" width="66" height="26" rx="5" stroke-width="6" />
+            <rect x="640" y="575" width="30" height="29" rx="5" stroke-width="6" />
+            <rect x="676" y="575" width="30" height="29" rx="5" stroke-width="6" />
+            <rect x="640" y="612" width="30" height="29" rx="5" stroke-width="6" />
+            <rect x="676" y="612" width="30" height="29" rx="5" stroke-width="6" />
+          </g>
+          <g stroke="#2ccfd6" stroke-width="5" stroke-linecap="round" fill="none">
+            <path d="M655 583v13M648.5 589.5h13" />
+            <path d="M684.5 589.5h13" />
+            <path d="M649.5 621l11 11M660.5 621l-11 11" />
+            <path d="M684.5 622.5h13M684.5 631h13" />
+          </g>
+        </svg>
+
+        <p class="nl-logo-word">NUMORA</p>
+        <p class="nl-logo-sub">SOLUTIONS</p>
+      </div>
+
+      <div class="nl-copy">
+        <span class="nl-badge">TU DINERO, TU DECISIÓN</span>
+        <h1 class="nl-title">
+          <span>Tu dinero.</span>
+          <span>Tus decisiones.</span>
+          <span>Tu control.</span>
+        </h1>
+        <p class="nl-lead">
+          Organiza tus ingresos, controla tus gastos<br />
+          y toma mejores decisiones con tu dinero.
+        </p>
+      </div>
+
+      <div class="nl-chart" aria-hidden="true">
+        <svg viewBox="0 0 600 320" preserveAspectRatio="xMidYMax meet">
+          <defs>
+            <linearGradient id="nlBarGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3ef0dd" />
+              <stop offset="50%" stop-color="#20a8f7" />
+              <stop offset="100%" stop-color="#1544db" />
+            </linearGradient>
+            <linearGradient id="nlTrendGrad" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stop-color="#1f6bff" />
+              <stop offset="100%" stop-color="#35f0e0" />
+            </linearGradient>
+          </defs>
+
+          <rect
+            *ngFor="let b of bars"
+            class="nl-bar"
+            [attr.x]="b.x"
+            [attr.y]="b.y"
+            width="21"
+            [attr.height]="b.h"
+            rx="3"
+            fill="url(#nlBarGrad)"
+            [style]="b.style"
+          />
+
+          <path
+            class="nl-trend"
+            pathLength="1000"
+            d="M 18 292 Q 60 286 96 264 T 168 234 T 236 196 T 300 158 T 366 116 T 436 78 T 526 28"
+          />
+
+          <circle class="nl-glow" cx="544" cy="22" r="20" />
+          <polygon class="nl-arrowhead" points="558,12 538,42 522,24" />
+        </svg>
+      </div>
+
+      <div class="nl-features">
+        <div class="nl-feature">
+          <div class="nl-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.2 15.9A10 10 0 1 1 8.1 2.8" />
+              <path d="M22 12A10 10 0 0 0 12 2v10z" />
+            </svg>
+          </div>
+          <div class="nl-feature-text">
+            <b>Visualiza</b>
+            <small>tus finanzas<br />en tiempo real</small>
+          </div>
+        </div>
+
+        <div class="nl-feature">
+          <div class="nl-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </div>
+          <div class="nl-feature-text">
+            <b>Seguro</b>
+            <small>tus datos siempre<br />protegidos</small>
+          </div>
+        </div>
+
+        <div class="nl-feature">
+          <div class="nl-feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 17 9 11 13 15 21 7" />
+              <polyline points="15 7 21 7 21 13" />
+            </svg>
+          </div>
+          <div class="nl-feature-text">
+            <b>Decide</b>
+            <small>con información<br />clara y útil</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TARJETA DE LOGIN / REGISTRO ===================== -->
+    <section class="nl-panel">
+      <div class="nl-card">
+
+        <div class="nl-theme" role="group" aria-label="Tema de la tarjeta">
+          <button type="button" [class.is-active]="darkCard" (click)="darkCard = true" aria-label="Modo oscuro">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+            </svg>
+          </button>
+          <button type="button" [class.is-active]="!darkCard" (click)="darkCard = false" aria-label="Modo claro">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
+              <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="nl-secure">
+          <div class="nl-secure-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="11" width="16" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 1 1 8 0v4" />
+            </svg>
+          </div>
+          <span>{{ isRegistering ? 'CREA TU CUENTA' : 'ACCESO SEGURO' }}</span>
+        </div>
+
+        <h2>{{ isRegistering ? 'Registrate en Numora' : 'Iniciar sesión' }}</h2>
+        <p>{{ isRegistering ? 'Completa tus datos para comenzar.' : 'Ingresa tus datos para continuar.' }}</p>
+
+        <form *ngIf="!isRegistering; else registerForm" [formGroup]="loginForm" (ngSubmit)="submitLogin()" novalidate>
+          <div class="nl-field">
+            <label for="nl-email">Correo electrónico</label>
+            <div class="nl-input">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="m3 7 9 6 9-6" />
+              </svg>
+              <input id="nl-email" type="email" formControlName="email" placeholder="correo@ejemplo.com" autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="nl-field">
+            <label for="nl-pass">Contraseña</label>
+            <div class="nl-input">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="11" width="16" height="10" rx="2" />
+                <path d="M8 11V7a4 4 0 1 1 8 0v4" />
+              </svg>
+              <input
+                id="nl-pass"
+                [type]="showPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Ingresa tu contraseña"
+                autocomplete="current-password"
+              />
+              <button
+                class="nl-eye"
+                type="button"
+                (click)="togglePasswordVisibility()"
+                [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z" />
+                  <circle cx="12" cy="12" r="3" />
+                  <line *ngIf="showPassword" x1="4" y1="20" x2="20" y2="4" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="nl-submit" type="submit" [disabled]="loginForm.invalid || isSubmitting">
+            {{ isSubmitting ? 'Ingresando...' : 'Ingresar a Numora' }}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </button>
+        </form>
+
+        <ng-template #registerForm>
+          <form [formGroup]="registrationForm" (ngSubmit)="submitRegistration()" novalidate>
+            <div class="nl-field">
+              <label for="nl-name">Nombre completo</label>
+              <div class="nl-input">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+                </svg>
+                <input id="nl-name" type="text" formControlName="fullName" placeholder="Tu nombre" autocomplete="name" />
+              </div>
+            </div>
+
+            <div class="nl-field">
+              <label for="nl-reg-email">Correo electrónico</label>
+              <div class="nl-input">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path d="m3 7 9 6 9-6" />
+                </svg>
+                <input id="nl-reg-email" type="email" formControlName="email" placeholder="correo@ejemplo.com" autocomplete="email" />
+              </div>
+            </div>
+
+            <div class="nl-field">
+              <label for="nl-reg-pass">Contraseña</label>
+              <div class="nl-input">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="11" width="16" height="10" rx="2" />
+                  <path d="M8 11V7a4 4 0 1 1 8 0v4" />
+                </svg>
+                <input
+                  id="nl-reg-pass"
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="Crea una contraseña segura"
+                  autocomplete="new-password"
+                />
+                <button
+                  class="nl-eye"
+                  type="button"
+                  (click)="togglePasswordVisibility()"
+                  [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z" />
+                    <circle cx="12" cy="12" r="3" />
+                    <line *ngIf="showPassword" x1="4" y1="20" x2="20" y2="4" />
+                  </svg>
+                </button>
+              </div>
+              <p class="password-hint">8+ caracteres, mayúscula, minúscula y número. No uses espacios.</p>
+            </div>
+
+            <div class="nl-field">
+              <label for="nl-confirm">Confirmar contraseña</label>
+              <div class="nl-input">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="11" width="16" height="10" rx="2" />
+                  <path d="M8 11V7a4 4 0 1 1 8 0v4" />
+                </svg>
+                <input id="nl-confirm" type="password" formControlName="confirmPassword" placeholder="Repite tu contraseña" autocomplete="new-password" />
+              </div>
+              <p *ngIf="registrationForm.controls.confirmPassword.touched && !passwordsMatch" class="field-error">
+                Las contraseñas no coinciden.
+              </p>
+            </div>
+
+            <button class="nl-submit" type="submit" [disabled]="registrationForm.invalid || !passwordsMatch || isSubmitting">
+              {{ isSubmitting ? 'Creando cuenta...' : 'Crear cuenta' }}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          </form>
+        </ng-template>
+
+        <div class="nl-alert" [class.nl-alert--success]="alertType === 'success'" *ngIf="errorMessage" role="alert">
+          <svg *ngIf="alertType === 'error'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          <svg *ngIf="alertType === 'success'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9" />
+            <path d="m8.5 12.5 2.5 2.5 5-5" />
+          </svg>
+          {{ errorMessage }}
+        </div>
+
+        <div class="nl-sep"><span>{{ isRegistering ? '¿Ya tienes una cuenta?' : '¿No tienes cuenta?' }}</span></div>
+
+        <button class="nl-create" type="button" (click)="toggleMode()">
+          {{ isRegistering ? 'Iniciar sesión' : 'Crear una cuenta' }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M13 6l6 6-6 6" />
+          </svg>
+        </button>
+      </div>
+    </section>
+  </div>
+</div>

@@ -40,8 +40,12 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  protected get userInitial(): string {
+    return this.user?.fullName?.trim().charAt(0).toUpperCase() || '?';
+  }
+
   protected logout(): void {
-    this.authService.logout('Cerraste sesión correctamente.');
+    this.authService.logout('Cerraste sesión correctamente.', 'success');
   }
 
   protected toggleMenu(): void {
