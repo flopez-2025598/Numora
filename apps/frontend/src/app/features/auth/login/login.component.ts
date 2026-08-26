@@ -2,63 +2,183 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 
 const strongPasswordPattern = /^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).*$/;
 
+interface MathSymbol {
+  t: string;
+  x: number;
+  y: number;
+  size: number;
+  dur: number;
+  delay: number;
+}
+
+// Símbolos decorativos del fondo del panel izquierdo. Son datos fijos
+// (no vienen del usuario ni del backend), solo para dar ambientación
+// visual de "finanzas/matemáticas".
+const SYMBOLS: MathSymbol[] = [
+  { t: '%', x: 2, y: 11, size: 30, dur: 9, delay: 0 },
+  { t: '1.28', x: 1, y: 27, size: 26, dur: 11, delay: 1.2 },
+  { t: '×', x: 2, y: 44, size: 22, dur: 8, delay: 2.4 },
+  { t: '÷', x: 1, y: 56, size: 22, dur: 10, delay: 0.6 },
+  { t: '%', x: 3, y: 82, size: 24, dur: 12, delay: 3.1 },
+  { t: '+ 8.74', x: 21, y: 9, size: 28, dur: 10, delay: 0.9 },
+  { t: '=', x: 25, y: 24, size: 24, dur: 9, delay: 2.0 },
+  { t: '(a+b)²', x: 26, y: 33, size: 28, dur: 12, delay: 0.3 },
+  { t: '√96', x: 19, y: 38, size: 26, dur: 11, delay: 1.7 },
+  { t: '9.99', x: 22, y: 47, size: 26, dur: 9, delay: 2.8 },
+  { t: '0.15', x: 28, y: 53, size: 26, dur: 10, delay: 1.1 },
+  { t: '%', x: 25, y: 60, size: 24, dur: 13, delay: 3.4 },
+  { t: '√', x: 30, y: 66, size: 22, dur: 8, delay: 0.5 },
+  { t: 'y = mx + b', x: 13, y: 70, size: 20, dur: 12, delay: 2.2 },
+  { t: '≈ 6.99', x: 33, y: 6, size: 28, dur: 11, delay: 1.5 },
+  { t: '1.75', x: 31, y: 19, size: 26, dur: 9, delay: 3.0 },
+  { t: '98', x: 33, y: 43, size: 24, dur: 10, delay: 0.8 },
+  { t: '√', x: 36, y: 32, size: 30, dur: 12, delay: 2.6 },
+  { t: '√85', x: 38, y: 22, size: 26, dur: 9, delay: 1.0 },
+  { t: '×', x: 40, y: 38, size: 22, dur: 11, delay: 3.3 },
+  { t: '%', x: 41, y: 12, size: 24, dur: 10, delay: 0.2 },
+  { t: 'β', x: 45, y: 27, size: 26, dur: 12, delay: 1.9 },
+  { t: 'π', x: 47, y: 50, size: 28, dur: 9, delay: 2.7 },
+  { t: '6.77', x: 93, y: 8, size: 24, dur: 10, delay: 0.4 },
+  { t: '≈ 1.46', x: 91, y: 18, size: 24, dur: 12, delay: 2.1 },
+  { t: '√x', x: 93, y: 28, size: 24, dur: 9, delay: 1.3 },
+  { t: '÷ β', x: 92, y: 38, size: 24, dur: 11, delay: 3.2 },
+  { t: '%', x: 94, y: 48, size: 24, dur: 10, delay: 0.7 },
+  { t: 'Σ', x: 93, y: 58, size: 24, dur: 12, delay: 2.5 },
+  { t: 'π', x: 94, y: 66, size: 26, dur: 9, delay: 1.6 },
+  { t: '+ 0.86', x: 90, y: 76, size: 24, dur: 11, delay: 3.5 },
+  { t: '=', x: 94, y: 85, size: 22, dur: 10, delay: 0.1 },
+];
+
+const DOTS = [
+  { x: 8, y: 20, delay: 0 },
+  { x: 16, y: 55, delay: 1.1 },
+  { x: 30, y: 15, delay: 2.3 },
+  { x: 44, y: 62, delay: 0.7 },
+  { x: 38, y: 47, delay: 3.0 },
+  { x: 89, y: 33, delay: 1.7 },
+  { x: 96, y: 55, delay: 2.6 },
+  { x: 12, y: 78, delay: 0.4 },
+];
+
+// Alturas de las barras de la gráfica decorativa (unidades del viewBox, base en y = 300).
+const BAR_HEIGHTS = [12, 19, 27, 38, 49, 63, 78, 93, 109, 124, 139, 154, 167, 180, 192, 203, 213, 223];
+
 @Component({
-  selector: 'app-login', standalone: true, imports: [CommonModule, ReactiveFormsModule],
-  template: `
-    <main class="auth-shell"><section class="auth-layout"><div class="brand-panel"><div class="brand"><img src="/numora-logo.png" alt="NUMORA" class="brand-logo" /></div><div class="brand-copy"><p class="eyebrow">Numora Solutions</p><h1>Finanzas claras para mejores decisiones.</h1><p>Controla tus finanzas personales desde un solo lugar.</p></div></div>
-      <section class="auth-card"><div><p class="eyebrow">{{ isRegistering ? 'Crea tu cuenta' : 'Acceso seguro' }}</p><h2>{{ isRegistering ? 'Registrate en Numora' : 'Iniciar sesion' }}</h2><p class="intro">{{ isRegistering ? 'Completa tus datos para comenzar.' : 'Ingresa tus datos para continuar.' }}</p></div>
-        <form *ngIf="!isRegistering; else registerForm" [formGroup]="loginForm" (ngSubmit)="submitLogin()"><label><span>Correo electronico</span><input type="email" formControlName="email" placeholder="correo@ejemplo.com" autocomplete="email" /></label><label><span>Contrasena</span><input type="password" formControlName="password" placeholder="Ingresa tu contrasena" autocomplete="current-password" /></label><button type="submit" [disabled]="loginForm.invalid || isSubmitting">{{ isSubmitting ? 'Ingresando...' : 'Ingresar a Numora' }}</button></form>
-        <ng-template #registerForm><form [formGroup]="registrationForm" (ngSubmit)="submitRegistration()"><label><span>Nombre completo</span><input type="text" formControlName="fullName" placeholder="Tu nombre" autocomplete="name" /></label><label><span>Correo electronico</span><input type="email" formControlName="email" placeholder="correo@ejemplo.com" autocomplete="email" /></label><label><span>Contrasena</span><input type="password" formControlName="password" placeholder="Crea una contrasena segura" autocomplete="new-password" /></label><p class="password-hint">8+ caracteres, mayuscula, minuscula y numero. No uses espacios.</p><label><span>Confirmar contrasena</span><input type="password" formControlName="confirmPassword" placeholder="Repite tu contrasena" autocomplete="new-password" /></label><p *ngIf="registrationForm.controls.confirmPassword.touched && !passwordsMatch" class="field-error">Las contrasenas no coinciden.</p><button type="submit" [disabled]="registrationForm.invalid || !passwordsMatch || isSubmitting">{{ isSubmitting ? 'Creando cuenta...' : 'Crear cuenta' }}</button></form></ng-template>
-        <p class="error" *ngIf="errorMessage" role="alert">{{ errorMessage }}</p><button type="button" class="mode-switch" (click)="toggleMode()">{{ isRegistering ? 'Ya tengo una cuenta' : 'Crear una cuenta' }}</button>
-      </section>
-    </section></main>`,
-  styles: [`
-    :host { display: block; min-height: 100vh; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    .auth-shell { display: grid; min-height: 100vh; place-items: center; overflow: hidden; padding: 28px; background: radial-gradient(circle at 14% 14%, rgba(0, 184, 255, .22), transparent 23rem), radial-gradient(circle at 86% 86%, rgba(0, 107, 255, .2), transparent 25rem), #030b1a; }
-    .auth-layout { display: grid; width: min(100%, 1040px); grid-template-columns: 1.08fr .92fr; overflow: hidden; border: 1px solid rgba(135, 207, 255, .26); border-radius: 22px; background: #f7fbff; box-shadow: 0 28px 80px rgba(0, 0, 0, .56), 0 0 44px rgba(0, 153, 255, .13); }
-    .brand-panel { position: relative; display: flex; min-height: 560px; flex-direction: column; justify-content: space-between; overflow: hidden; padding: 44px; background: linear-gradient(145deg, #020816 0%, #071a38 55%, #083e77 100%); color: #fff; }
-    .brand-panel::before, .brand-panel::after { position: absolute; border-radius: 50%; content: ''; pointer-events: none; }
-    .brand-panel::before { top: -120px; right: -110px; width: 300px; height: 300px; border: 1px solid rgba(129, 221, 255, .22); box-shadow: 0 0 0 38px rgba(46, 157, 255, .04), 0 0 0 78px rgba(46, 157, 255, .03); }
-    .brand-panel::after { bottom: -145px; left: -110px; width: 310px; height: 310px; background: radial-gradient(circle, rgba(0, 198, 255, .2), transparent 67%); }
-    .brand { position: relative; z-index: 1; display: flex; align-items: center; }
-    .brand-logo { height: 64px; width: auto; }
-    .brand-copy { position: relative; z-index: 1; max-width: 395px; padding-bottom: 28px; }
-    .eyebrow { margin: 0 0 12px; color: #4cc8ff; font-size: .75rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
-    .brand-copy h1 { margin: 0; color: #f8fcff; font-size: 2.5rem; line-height: 1.07; letter-spacing: -.055em; text-shadow: 0 3px 20px rgba(0, 174, 255, .18); }
-    .brand-copy p:last-child { margin: 20px 0 0; color: #bdd7ec; line-height: 1.7; }
-    .auth-card { display: flex; flex-direction: column; justify-content: center; gap: 22px; padding: 50px 46px; background: linear-gradient(145deg, #ffffff, #edf6ff); }
-    .auth-card .eyebrow { color: #087cc8; }
-    .auth-card h2 { margin: 0; color: #062557; font-size: 1.82rem; letter-spacing: -.04em; }
-    .intro { margin: 8px 0 0; color: #61768f; }
-    .auth-card form { display: grid; gap: 17px; }
-    label { display: grid; gap: 8px; color: #244768; font-size: .9rem; font-weight: 750; }
-    input { min-height: 48px; box-sizing: border-box; width: 100%; border: 1px solid #c7ddeb; border-radius: 10px; padding: 0 14px; background: rgba(255, 255, 255, .9); color: #092e57; font: inherit; transition: border-color .2s, box-shadow .2s, transform .2s; }
-    input::placeholder { color: #90a5b9; }
-    input:focus { outline: 0; border-color: #159ee9; box-shadow: 0 0 0 4px rgba(14, 164, 241, .14); transform: translateY(-1px); }
-    button { min-height: 48px; margin-top: 4px; border: 1px solid rgba(106, 205, 255, .55); border-radius: 10px; background: linear-gradient(120deg, #05295c, #087ec9 58%, #14b7ed); box-shadow: 0 10px 22px rgba(0, 89, 165, .24); color: #fff; font: inherit; font-weight: 800; cursor: pointer; transition: filter .2s, transform .2s, box-shadow .2s; }
-    button:hover:not(:disabled) { box-shadow: 0 13px 26px rgba(0, 113, 207, .34); filter: brightness(1.08); transform: translateY(-1px); }
-    button:disabled { cursor: not-allowed; opacity: .62; }
-    .password-hint { margin: -6px 0 0; color: #647b92; font-size: .78rem; line-height: 1.45; }
-    .field-error { margin: -8px 0 0; color: #bb4050; font-size: .82rem; }
-    .error { margin: 0; border: 1px solid #f2c9ce; border-radius: 9px; background: #fff2f4; padding: 11px 12px; color: #a53041; font-size: .9rem; }
-    .mode-switch { margin: 0; border-color: transparent; background: transparent; box-shadow: none; color: #076db4; font-weight: 750; text-decoration: underline; text-decoration-color: #78c7ef; text-underline-offset: 4px; }
-    .mode-switch:hover:not(:disabled) { box-shadow: none; color: #034f91; }
-    @media (max-width: 760px) { .auth-shell { padding: 16px; } .auth-layout { grid-template-columns: 1fr; } .brand-panel { min-height: 250px; padding: 30px; } .brand-copy { padding: 32px 0 0; } .brand-copy h1 { font-size: 1.85rem; } .brand-copy p:last-child { display: none; } .auth-card { padding: 34px 26px; } }
-  `],
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  private readonly fb = inject(FormBuilder); private readonly authService = inject(AuthService); private readonly router = inject(Router); private readonly cdr = inject(ChangeDetectorRef);
-  protected readonly loginForm = this.fb.group({ email: ['', [Validators.required, Validators.email]], password: ['', Validators.required] });
-  protected readonly registrationForm = this.fb.group({ fullName: ['', [Validators.required, Validators.minLength(2)]], email: ['', [Validators.required, Validators.email]], password: ['', [Validators.required, Validators.pattern(strongPasswordPattern)]], confirmPassword: ['', Validators.required] });
-  protected isRegistering = false; protected isSubmitting = false; protected errorMessage = history.state.sessionMessage ?? '';
-  protected get passwordsMatch(): boolean { const { password, confirmPassword } = this.registrationForm.getRawValue(); return !!password && password === confirmPassword; }
-  protected toggleMode(): void { this.isRegistering = !this.isRegistering; this.errorMessage = ''; }
-  protected submitLogin(): void { if (this.loginForm.invalid) { this.loginForm.markAllAsTouched(); return; } const { email, password } = this.loginForm.getRawValue(); this.isSubmitting = true; this.errorMessage = ''; this.authService.login({ email: email ?? '', password: password ?? '' }).subscribe({ next: () => this.router.navigateByUrl('/dashboard'), error: (error: HttpErrorResponse) => this.showError(error, 'No se pudo iniciar sesion.') }); }
-  protected submitRegistration(): void { if (this.registrationForm.invalid || !this.passwordsMatch) { this.registrationForm.markAllAsTouched(); return; } const { fullName, email, password } = this.registrationForm.getRawValue(); this.isSubmitting = true; this.errorMessage = ''; const credentials = { email: email ?? '', password: password ?? '' }; this.authService.register({ fullName: fullName ?? '', ...credentials }).subscribe({ next: () => this.authService.login(credentials).subscribe({ next: () => this.router.navigateByUrl('/dashboard'), error: (error: HttpErrorResponse) => this.showError(error, 'La cuenta fue creada, pero no se pudo iniciar sesion.') }), error: (error: HttpErrorResponse) => this.showError(error, 'No se pudo crear la cuenta.') }); }
-  private showError(error: HttpErrorResponse, fallbackMessage: string): void { this.isSubmitting = false; this.errorMessage = error.error?.error ?? fallbackMessage; this.cdr.detectChanges(); }
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly sanitizer = inject(DomSanitizer);
+
+  protected readonly loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required],
+  });
+
+  protected readonly registrationForm = this.fb.group({
+    fullName: ['', [Validators.required, Validators.minLength(2)]],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.pattern(strongPasswordPattern)]],
+    confirmPassword: ['', Validators.required],
+  });
+
+  protected isRegistering = false;
+  protected isSubmitting = false;
+  protected errorMessage = history.state.sessionMessage ?? '';
+  protected alertType: 'success' | 'error' = history.state.sessionType ?? 'error';
+  protected darkCard = false;
+  protected showPassword = false;
+
+  protected get passwordsMatch(): boolean {
+    const { password, confirmPassword } = this.registrationForm.getRawValue();
+    return !!password && password === confirmPassword;
+  }
+
+  // Angular sanitiza por seguridad cualquier binding [style] que reciba un
+  // string completo (podría venir de un usuario e inyectar CSS malicioso).
+  // Aquí es seguro marcarlo como confiable con bypassSecurityTrustStyle
+  // porque el string se arma solo con los números fijos de arriba, nunca
+  // con datos que escriba un usuario.
+  protected readonly symbols: Array<MathSymbol & { style: SafeStyle }> = SYMBOLS.map((s) => ({
+    ...s,
+    style: this.sanitizer.bypassSecurityTrustStyle(
+      `left:${s.x}%;top:${s.y}%;font-size:${s.size}px;--dur:${s.dur}s;--delay:${s.delay}s`,
+    ),
+  }));
+
+  protected readonly dots: Array<{ style: SafeStyle }> = DOTS.map((d) => ({
+    style: this.sanitizer.bypassSecurityTrustStyle(`left:${d.x}%;top:${d.y}%;--delay:${d.delay}s`),
+  }));
+
+  protected readonly bars: Array<{ x: number; y: number; h: number; style: SafeStyle }> = BAR_HEIGHTS.map(
+    (h, i) => ({
+      x: 30 + i * 31,
+      y: 300 - h,
+      h,
+      style: this.sanitizer.bypassSecurityTrustStyle(`--d:${(i * 0.07).toFixed(2)}s`),
+    }),
+  );
+
+  protected toggleMode(): void {
+    this.isRegistering = !this.isRegistering;
+    this.errorMessage = '';
+  }
+
+  protected togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  protected submitLogin(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+    const { email, password } = this.loginForm.getRawValue();
+    this.isSubmitting = true;
+    this.errorMessage = '';
+    this.authService.login({ email: email ?? '', password: password ?? '' }).subscribe({
+      next: () => this.router.navigateByUrl('/dashboard'),
+      error: (error: HttpErrorResponse) => this.showError(error, 'No se pudo iniciar sesion.'),
+    });
+  }
+
+  protected submitRegistration(): void {
+    if (this.registrationForm.invalid || !this.passwordsMatch) {
+      this.registrationForm.markAllAsTouched();
+      return;
+    }
+    const { fullName, email, password } = this.registrationForm.getRawValue();
+    this.isSubmitting = true;
+    this.errorMessage = '';
+    const credentials = { email: email ?? '', password: password ?? '' };
+    this.authService.register({ fullName: fullName ?? '', ...credentials }).subscribe({
+      next: () =>
+        this.authService.login(credentials).subscribe({
+          next: () => this.router.navigateByUrl('/dashboard'),
+          error: (error: HttpErrorResponse) =>
+            this.showError(error, 'La cuenta fue creada, pero no se pudo iniciar sesion.'),
+        }),
+      error: (error: HttpErrorResponse) => this.showError(error, 'No se pudo crear la cuenta.'),
+    });
+  }
+
+  private showError(error: HttpErrorResponse, fallbackMessage: string): void {
+    this.isSubmitting = false;
+    this.errorMessage = error.error?.error ?? fallbackMessage;
+    this.alertType = 'error';
+    this.cdr.detectChanges();
+  }
 }
