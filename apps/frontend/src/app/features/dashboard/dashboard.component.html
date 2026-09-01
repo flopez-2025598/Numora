@@ -22,7 +22,7 @@
   <div class="dashboard-body">
     <aside class="sidebar" *ngIf="isMenuOpen">
       <div class="sidebar-profile" *ngIf="user">
-        <span class="avatar">{{ userInitial }}</span>
+        <img class="avatar" src="/user-avatar.png" alt="Foto de perfil" />
         <p class="sidebar-welcome">Bienvenido, {{ user.fullName }}</p>
       </div>
 
@@ -135,33 +135,61 @@
       <section *ngIf="!isLoading && !errorMessage" class="cards-grid">
         <article class="card card--expenses">
           <p class="card-tag">Gastos mensuales</p>
-          <p class="card-placeholder">Se conectará en la Etapa 6</p>
+          <p class="stat-value">Q0.00</p>
+          <p class="stat-caption">Sin cambios respecto al mes pasado</p>
+          <p class="card-caption">Gastos por categoría</p>
+          <div class="donut" aria-hidden="true"></div>
         </article>
 
         <article class="card card--percentage">
           <h3>Porcentaje mensual gastado</h3>
-          <p class="card-placeholder">Se conectará en la Etapa 6</p>
+          <p class="stat-value">0%</p>
+          <p class="card-caption">Este es el porcentaje que has gastado de tus ingresos mensuales.</p>
         </article>
 
         <article class="card card--bar">
           <h3>Ingresos vs. Gastos</h3>
-          <p class="card-placeholder">Gráfica en la Etapa 7</p>
+          <div class="chart-legend">
+            <span class="legend-dot legend-dot--income"></span>Ingresos
+            <span class="legend-dot legend-dot--expense"></span>Gastos
+          </div>
+          <div class="bars-chart" aria-hidden="true">
+            <div class="bar-group">
+              <span class="bar bar--income"></span>
+              <span class="bar bar--expense"></span>
+            </div>
+            <div class="bar-group">
+              <span class="bar bar--income"></span>
+              <span class="bar bar--expense"></span>
+            </div>
+            <div class="bar-group">
+              <span class="bar bar--income"></span>
+              <span class="bar bar--expense"></span>
+            </div>
+          </div>
         </article>
 
         <article class="card card--income-fund">
           <div class="stat-block">
             <h3>Ingresos mensuales</h3>
-            <p class="card-placeholder">Se conectará en la Etapa 6</p>
+            <p class="stat-value stat-value--sm">Q0.00</p>
           </div>
           <div class="stat-block">
             <h3>Fondo de emergencia</h3>
-            <p class="card-placeholder">Se conectará en la Etapa 6</p>
+            <p class="stat-value stat-value--sm">Q0.00</p>
           </div>
         </article>
 
         <article class="card card--trend">
           <h3>Tendencia mensual</h3>
-          <p class="card-placeholder">Gráfica en la Etapa 7</p>
+          <div class="chart-legend">
+            <span class="legend-dot legend-dot--income"></span>Ingresos
+            <span class="legend-dot legend-dot--expense"></span>Gastos
+          </div>
+          <svg class="trend-svg" viewBox="0 0 260 100" preserveAspectRatio="none" aria-hidden="true">
+            <polyline class="trend-line trend-line--income" points="0,94 260,94" />
+            <polyline class="trend-line trend-line--expense" points="0,96 260,96" />
+          </svg>
         </article>
       </section>
     </main>
