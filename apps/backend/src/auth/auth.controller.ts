@@ -44,6 +44,20 @@ export const authController = {
     }
   },
 
+  async refresh(req: Request, res: Response) {
+    if (!req.auth) {
+      return res.status(401).json({ error: 'No autenticado' });
+    }
+
+    try {
+      const result = authService.refresh(req.auth.userId, req.auth.role);
+      return res.status(200).json(result);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  },
+
   async me(req: Request, res: Response) {
     if (!req.auth) {
       return res.status(401).json({ error: 'No autenticado' });

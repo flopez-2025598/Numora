@@ -13,6 +13,26 @@ function isStrongPassword(password: string): boolean {
     && !/\s/.test(password);
 }
 
+// Firma un token nuevo para el usuario indicado. Se usa tanto en login()
+// como en refresh() para que la duración (JWT_EXPIRES_IN) y el secreto
+// (JWT_SECRET) se lean siempre del mismo lugar, sin repetir código.
+function signToken(userId: number, role: string): string {
+  const secret = process.env.JWT_SECRET;
+
+  if (!secret) {
+    throw new Error('JWT_SECRET no está definida. Revisa tu archivo .env');
+  }
+
+  const expiresIn = process.env.JWT_EXPIRES_IN;
+
+  if (!expiresIn) {
+    throw new Error('JWT_EXPIRES_IN no está definida. Revisa tu archivo .env');
+  }
+
+  const tokenExpiresIn = expiresIn as NonNullable<jwt.SignOptions['expiresIn']>;
+  return jwt.sign({ userId, role }, secret, { expiresIn: tokenExpiresIn });
+}
+
 export const authService = {
   async register(input: RegisterInput): Promise<AuthUser> {
     if (!isStrongPassword(input.password)) {
@@ -51,26 +71,7 @@ export const authService = {
       throw new Error('INVALID_CREDENTIALS');
     }
 
-    const secret = process.env.JWT_SECRET;
-
-    if (!secret) {
-      throw new Error('JWT_SECRET no está definida. Revisa tu archivo .env');
-    }
-
-    const expiresIn = process.env.JWT_EXPIRES_IN;
-
-    if (!expiresIn) {
-      throw new Error('JWT_EXPIRES_IN no está definida. Revisa tu archivo .env');
-    }
-
-    const tokenExpiresIn = expiresIn as NonNullable<jwt.SignOptions['expiresIn']>;
-    const token = jwt.sign(
-      { userId: user.id, role: user.role },
-      secret,
-      {
-        expiresIn: tokenExpiresIn,
-      },
-    );
+    const token = signToken(user.id, user.role);
 
     return {
       user: {
@@ -81,6 +82,14 @@ export const authService = {
       },
       token,
     };
+  },
+
+  // Emite un token nuevo (misma duración JWT_EXPIRES_IN, contada desde
+  // ahora) para el usuario ya autenticado. Solo se llama mientras el
+  // usuario sigue activo en la página; si no hay actividad, el frontend
+  // deja de pedir renovaciones y el token original expira normalmente.
+  refresh(userId: number, role: string): { token: string } {
+    return { token: signToken(userId, role) };
   },
 
   async me(userId: number): Promise<AuthUser> {

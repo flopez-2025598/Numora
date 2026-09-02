@@ -24,3 +24,7 @@ export interface LoginResponse {
 }
 
 export type RegisterResponse = AuthUser;
+
+export interface RefreshResponse {
+  token: string;
+}

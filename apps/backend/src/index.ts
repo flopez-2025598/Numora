@@ -1,12 +1,13 @@
 import 'dotenv/config';
 import express from 'express';
 import { authRoutes } from './auth/auth.routes.js';
+import { incomeRoutes } from './income/income.routes.js';
 
-// Módulos adelantados (income, expenses, taxes, emergency-fund, dashboard,
-// reports, users) quedan desconectados temporalmente mientras el proyecto
-// vuelve a una base mínima de Login + Dashboard. El código sigue intacto
-// en sus carpetas dentro de src/ y se puede reconectar reactivando estos
-// imports y sus app.use() correspondientes.
+// Módulos adelantados (expenses, taxes, emergency-fund, dashboard, reports,
+// users) quedan desconectados temporalmente mientras el proyecto vuelve a
+// una base mínima. El código sigue intacto en sus carpetas dentro de src/
+// y se puede reconectar reactivando estos imports y sus app.use()
+// correspondientes. income/ ya se reconectó para la pantalla de Ingresos.
 
 const app = express();
 const port = 3000;
@@ -37,6 +38,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/auth', authRoutes);
+app.use('/income', incomeRoutes);
 
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
