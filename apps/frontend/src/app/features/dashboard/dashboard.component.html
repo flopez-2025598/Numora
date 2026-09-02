@@ -31,13 +31,15 @@
           <h2 class="nav-group-title">Principal</h2>
           <ul>
             <li class="nav-item nav-item--active">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="7" height="7" rx="1.5" />
-                <rect x="14" y="3" width="7" height="7" rx="1.5" />
-                <rect x="3" y="14" width="7" height="7" rx="1.5" />
-                <rect x="14" y="14" width="7" height="7" rx="1.5" />
-              </svg>
-              <span>Resumen</span>
+              <a routerLink="/dashboard">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                </svg>
+                <span>Resumen</span>
+              </a>
             </li>
           </ul>
         </section>
@@ -45,12 +47,14 @@
         <section class="nav-group">
           <h2 class="nav-group-title">Transacciones</h2>
           <ul>
-            <li class="nav-item nav-item--disabled">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 15V9M9 12l3-3 3 3" />
-              </svg>
-              <span>Ingresos</span>
+            <li class="nav-item">
+              <a routerLink="/ingresos">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 15V9M9 12l3-3 3 3" />
+                </svg>
+                <span>Ingresos</span>
+              </a>
             </li>
             <li class="nav-item nav-item--disabled">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -150,29 +154,31 @@
         <article class="card card--bar">
           <h3>Ingresos vs. Gastos</h3>
           <div class="chart-legend">
-            <span class="legend-dot legend-dot--income"></span>Ingresos
             <span class="legend-dot legend-dot--expense"></span>Gastos
+            <span class="legend-dot legend-dot--income"></span>Ingresos
           </div>
-          <div class="bars-chart" aria-hidden="true">
-            <div class="bar-group">
-              <span class="bar bar--income"></span>
-              <span class="bar bar--expense"></span>
-            </div>
-            <div class="bar-group">
-              <span class="bar bar--income"></span>
-              <span class="bar bar--expense"></span>
-            </div>
-            <div class="bar-group">
-              <span class="bar bar--income"></span>
-              <span class="bar bar--expense"></span>
-            </div>
-          </div>
+          <svg class="chart-svg" viewBox="0 0 360 180" role="img" aria-label="Comparación de ingresos y gastos de los últimos tres meses">
+            <g class="chart-grid">
+              <line x1="35" y1="35" x2="345" y2="35"/><line x1="35" y1="70" x2="345" y2="70"/>
+              <line x1="35" y1="105" x2="345" y2="105"/><line x1="35" y1="140" x2="345" y2="140"/>
+            </g>
+            <g class="axis-labels"><text x="28" y="39">100</text><text x="28" y="74">66</text><text x="28" y="109">33</text><text x="28" y="144">0</text></g>
+            <g *ngFor="let month of barChartMonths; let i = index">
+              <rect class="bar-svg bar-svg--expense" [attr.x]="64 + i * 96" [attr.y]="month.expenseY === 140 ? 138 : month.expenseY" width="25" [attr.height]="month.expenseY === 140 ? 2 : 140 - month.expenseY" rx="2"/>
+              <rect class="bar-svg bar-svg--income" [attr.x]="91 + i * 96" [attr.y]="month.incomeY === 140 ? 138 : month.incomeY" width="25" [attr.height]="month.incomeY === 140 ? 2 : 140 - month.incomeY" rx="2"/>
+              <text class="month-label" [attr.x]="89 + i * 96" y="162">{{ month.label }}</text>
+            </g>
+          </svg>
         </article>
 
         <article class="card card--income-fund">
           <div class="stat-block">
             <h3>Ingresos mensuales</h3>
-            <p class="stat-value stat-value--sm">Q0.00</p>
+            <p class="stat-value stat-value--sm">{{ formatCurrency(totalIncomeThisMonth) }}</p>
+            <p class="stat-caption" *ngIf="incomeVsLastMonthPct as pct; else incomeNoData">
+              <span [class.up]="pct >= 0" [class.down]="pct < 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
+            </p>
+            <ng-template #incomeNoData><p class="stat-caption">Sin datos del mes pasado</p></ng-template>
           </div>
           <div class="stat-block">
             <h3>Fondo de emergencia</h3>
@@ -183,12 +189,22 @@
         <article class="card card--trend">
           <h3>Tendencia mensual</h3>
           <div class="chart-legend">
-            <span class="legend-dot legend-dot--income"></span>Ingresos
             <span class="legend-dot legend-dot--expense"></span>Gastos
+            <span class="legend-dot legend-dot--income"></span>Ingresos
           </div>
-          <svg class="trend-svg" viewBox="0 0 260 100" preserveAspectRatio="none" aria-hidden="true">
-            <polyline class="trend-line trend-line--income" points="0,94 260,94" />
-            <polyline class="trend-line trend-line--expense" points="0,96 260,96" />
+          <svg class="chart-svg" viewBox="0 0 360 180" role="img" aria-label="Tendencia de ingresos y gastos de los últimos cuatro meses">
+            <g class="chart-grid">
+              <line x1="35" y1="35" x2="345" y2="35"/><line x1="35" y1="68" x2="345" y2="68"/>
+              <line x1="35" y1="102" x2="345" y2="102"/><line x1="35" y1="135" x2="345" y2="135"/>
+            </g>
+            <g class="axis-labels"><text x="28" y="39">100</text><text x="28" y="72">66</text><text x="28" y="106">33</text><text x="28" y="139">0</text></g>
+            <polyline class="trend-line trend-line--expense" [attr.points]="expenseTrendPoints" />
+            <polyline class="trend-line trend-line--income" [attr.points]="incomeTrendPoints" />
+            <g *ngFor="let month of trendMonths">
+              <circle class="trend-point trend-point--expense" [attr.cx]="month.x" [attr.cy]="month.expenseY" r="3"/>
+              <circle class="trend-point trend-point--income" [attr.cx]="month.x" [attr.cy]="month.incomeY" r="3"/>
+              <text class="month-label" [attr.x]="month.x" y="159">{{ month.label }}</text>
+            </g>
           </svg>
         </article>
       </section>
