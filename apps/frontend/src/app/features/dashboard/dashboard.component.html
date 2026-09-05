@@ -164,9 +164,9 @@
             </g>
             <g class="axis-labels"><text x="28" y="39">100</text><text x="28" y="74">66</text><text x="28" y="109">33</text><text x="28" y="144">0</text></g>
             <g *ngFor="let month of barChartMonths; let i = index">
-              <rect class="bar-svg bar-svg--expense" [attr.x]="64 + i * 96" [attr.y]="month.expenseY === 140 ? 138 : month.expenseY" width="25" [attr.height]="month.expenseY === 140 ? 2 : 140 - month.expenseY" rx="2"/>
-              <rect class="bar-svg bar-svg--income" [attr.x]="91 + i * 96" [attr.y]="month.incomeY === 140 ? 138 : month.incomeY" width="25" [attr.height]="month.incomeY === 140 ? 2 : 140 - month.incomeY" rx="2"/>
-              <text class="month-label" [attr.x]="89 + i * 96" y="162">{{ month.label }}</text>
+              <rect class="bar-svg bar-svg--expense" [attr.x]="57 + i * 96" [attr.y]="month.expenseY === 140 ? 138 : month.expenseY" width="32" [attr.height]="month.expenseY === 140 ? 2 : 140 - month.expenseY" rx="3"/>
+              <rect class="bar-svg bar-svg--income" [attr.x]="91 + i * 96" [attr.y]="month.incomeY === 140 ? 138 : month.incomeY" width="32" [attr.height]="month.incomeY === 140 ? 2 : 140 - month.incomeY" rx="3"/>
+              <text class="month-label" [attr.x]="90 + i * 96" y="162">{{ month.label }}</text>
             </g>
           </svg>
         </article>
