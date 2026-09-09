@@ -6,6 +6,8 @@ import { AuthService } from '../../core/auth/auth.service';
 import type { AuthUser } from '../../core/auth/auth.model';
 import { IncomeService } from '../../core/income/income.service';
 import type { Income, IncomeSource, IncomeType } from '../../core/income/income.model';
+import { ExpenseService } from '../../core/expense/expense.service';
+import type { Expense } from '../../core/expense/expense.model';
 
 interface TypeBreakdown {
   type: IncomeType;
@@ -43,6 +45,7 @@ const TYPE_COLORS: Record<IncomeType, string> = {
 export class IncomeComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly incomeService = inject(IncomeService);
+  private readonly expenseService = inject(ExpenseService);
   private readonly fb = inject(FormBuilder);
   private readonly cdr = inject(ChangeDetectorRef);
 
@@ -52,6 +55,7 @@ export class IncomeComponent implements OnInit {
   protected errorMessage = '';
 
   protected incomes: Income[] = [];
+  protected expenses: Expense[] = [];
   protected sources: IncomeSource[] = [];
   protected showAll = false;
 
@@ -116,6 +120,19 @@ export class IncomeComponent implements OnInit {
       },
     });
 
+    // Los gastos se usan solo para calcular el "Disponible total"
+    // (ingresos acumulados - gastos acumulados). Si falla, el disponible
+    // queda igual al total de ingresos, no rompe la pantalla.
+    this.expenseService.list().subscribe({
+      next: (expenses) => {
+        this.expenses = expenses;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        // silencioso
+      },
+    });
+
     this.incomeService.list().subscribe({
       next: (incomes) => {
         this.incomes = incomes;
@@ -140,6 +157,11 @@ export class IncomeComponent implements OnInit {
 
   private get now(): Date {
     return new Date();
+  }
+
+  // Nombre del mes actual en español, ej. "septiembre".
+  protected get currentMonthName(): string {
+    return this.now.toLocaleDateString('es-GT', { month: 'long' });
   }
 
   private get previousMonthRef(): Date {
@@ -179,6 +201,22 @@ export class IncomeComponent implements OnInit {
       return null;
     }
     return ((current - previous) / previous) * 100;
+  }
+
+  // --- Disponible total (acumulado de todo el historial) ---
+
+  protected get totalAllIncome(): number {
+    return this.sum(this.incomes);
+  }
+
+  protected get totalAllExpense(): number {
+    return this.expenses.reduce((acc, e) => acc + Number(e.amount), 0);
+  }
+
+  // Dinero disponible = todo lo que has ingresado menos todo lo que has
+  // gastado, sin importar el mes. Así el saldo de meses anteriores cuenta.
+  protected get availableTotal(): number {
+    return this.totalAllIncome - this.totalAllExpense;
   }
 
   protected get dailyAverage(): number {
@@ -318,6 +356,7 @@ export class IncomeComponent implements OnInit {
 
   protected formatCurrency(value: number | string): string {
     const n = typeof value === 'string' ? Number(value) : value;
-    return `Q${n.toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const amount = Math.abs(n).toLocaleString('es-GT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return `${n < 0 ? '-' : ''}Q${amount}`;
   }
 }

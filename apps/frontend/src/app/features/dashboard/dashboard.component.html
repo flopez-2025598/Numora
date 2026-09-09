@@ -56,12 +56,14 @@
                 <span>Ingresos</span>
               </a>
             </li>
-            <li class="nav-item nav-item--disabled">
-              <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 9v6M9 12l3 3 3-3" />
-              </svg>
-              <span>Gastos</span>
+            <li class="nav-item">
+              <a routerLink="/gastos">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 9v6M9 12l3 3 3-3" />
+                </svg>
+                <span>Gastos</span>
+              </a>
             </li>
             <li class="nav-item nav-item--disabled">
               <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -139,16 +141,32 @@
       <section *ngIf="!isLoading && !errorMessage" class="cards-grid">
         <article class="card card--expenses">
           <p class="card-tag">Gastos mensuales</p>
-          <p class="stat-value">Q0.00</p>
-          <p class="stat-caption">Sin cambios respecto al mes pasado</p>
+          <p class="stat-value">{{ formatCurrency(totalExpenseThisMonth) }}</p>
+          <p class="stat-caption" *ngIf="expenseVsLastMonthPct as pct; else expenseNoData">
+            <span [class.up]="pct < 0" [class.down]="pct >= 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
+          </p>
+          <ng-template #expenseNoData><p class="stat-caption">Sin datos del mes pasado</p></ng-template>
           <p class="card-caption">Gastos por categoría</p>
-          <div class="donut" aria-hidden="true"></div>
+          <div
+            class="donut"
+            [class.donut--filled]="hasAnyExpense"
+            [style.background]="hasAnyExpense ? expenseDonutGradient : null"
+            aria-hidden="true"
+          ></div>
+          <ul class="donut-legend" *ngIf="hasAnyExpense">
+            <li *ngFor="let c of expenseCategoryBreakdown | slice:0:5">
+              <span class="legend-swatch" [style.background]="c.color"></span>
+              <span class="legend-name">{{ c.name }}</span>
+              <span class="legend-pct">{{ c.pct | number:'1.0-0' }}%</span>
+            </li>
+          </ul>
         </article>
 
         <article class="card card--percentage">
           <h3>Porcentaje mensual gastado</h3>
-          <p class="stat-value">0%</p>
-          <p class="card-caption">Este es el porcentaje que has gastado de tus ingresos mensuales.</p>
+          <p class="stat-value">{{ (percentSpent ?? 0) | number:'1.0-1' }}%</p>
+          <p class="card-caption" *ngIf="percentSpent !== null; else percentNoData">Este es el porcentaje que has gastado de tus ingresos mensuales.</p>
+          <ng-template #percentNoData><p class="card-caption">Registra ingresos este mes para calcular el porcentaje gastado.</p></ng-template>
         </article>
 
         <article class="card card--bar">
@@ -173,12 +191,21 @@
 
         <article class="card card--income-fund">
           <div class="stat-block">
-            <h3>Ingresos mensuales</h3>
+            <h3>Este mes ganaste</h3>
             <p class="stat-value stat-value--sm">{{ formatCurrency(totalIncomeThisMonth) }}</p>
-            <p class="stat-caption" *ngIf="incomeVsLastMonthPct as pct; else incomeNoData">
-              <span [class.up]="pct >= 0" [class.down]="pct < 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
+            <p class="stat-caption">
+              <span class="stat-caption-month">Ingresos de {{ currentMonthName }}</span>
+              <span *ngIf="incomeVsLastMonthPct as pct"> · <span [class.up]="pct >= 0" [class.down]="pct < 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.0-0' }}%</span> vs. mes pasado</span>
             </p>
-            <ng-template #incomeNoData><p class="stat-caption">Sin datos del mes pasado</p></ng-template>
+          </div>
+          <div class="stat-block stat-block--highlight">
+            <h3>Tienes disponible</h3>
+            <p
+              class="stat-value stat-value--sm stat-value--available"
+              [class.is-positive]="availableTotal >= 0"
+              [class.is-negative]="availableTotal < 0"
+            >{{ formatCurrency(availableTotal) }}</p>
+            <p class="stat-caption">Todo lo que has ganado menos todo lo que has gastado, de todos los meses.</p>
           </div>
           <div class="stat-block">
             <h3>Fondo de emergencia</h3>

@@ -1,5 +1,5 @@
-<div class="income-shell">
-  <header class="income-header">
+<div class="expenses-shell">
+  <header class="expenses-header">
     <button
       type="button"
       class="menu-toggle"
@@ -11,10 +11,10 @@
     <div class="brand">
       <img src="/numora-logo.png" alt="NUMORA" class="brand-logo" />
     </div>
-    <h1 class="page-title">Ingresos</h1>
+    <h1 class="page-title">Gastos</h1>
   </header>
 
-  <div class="income-body">
+  <div class="expenses-body">
     <aside class="sidebar" *ngIf="isMenuOpen">
       <div class="sidebar-profile" *ngIf="user">
         <img class="avatar" src="/user-avatar.png" alt="Foto de perfil" />
@@ -42,7 +42,7 @@
         <section class="nav-group">
           <h2 class="nav-group-title">Transacciones</h2>
           <ul>
-            <li class="nav-item nav-item--active">
+            <li class="nav-item">
               <a routerLink="/ingresos">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="9" />
@@ -51,7 +51,7 @@
                 <span>Ingresos</span>
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item nav-item--active">
               <a routerLink="/gastos">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="9" />
@@ -122,10 +122,10 @@
       </button>
     </aside>
 
-    <main class="income-main">
+    <main class="expenses-main">
       <section *ngIf="isLoading" class="state">
         <span class="spinner"></span>
-        <p>Cargando tus ingresos...</p>
+        <p>Cargando tus gastos...</p>
       </section>
 
       <section *ngIf="errorMessage" class="error-state">
@@ -138,124 +138,94 @@
         <section class="stats-grid">
           <article class="stat-card">
             <div class="stat-icon stat-icon--total">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v10M9 9.5c0-1.4 1.3-2 3-2s3 .8 3 2c0 1.3-1.3 1.7-3 2c-1.7.3-3 .7-3 2c0 1.4 1.3 2 3 2s3-.6 3-2" /></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2" /><path d="M3 10h18M7 15h4" /></svg>
             </div>
-            <p class="stat-label">Ingresos totales</p>
+            <p class="stat-label">Gastos totales</p>
             <p class="stat-value">{{ formatCurrency(totalThisMonth) }}</p>
             <p class="stat-delta" *ngIf="vsLastMonthPct(totalThisMonth) as pct; else statNoData">
-              <span [class.up]="pct >= 0" [class.down]="pct < 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
+              <span [class.up]="pct < 0" [class.down]="pct >= 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
             </p>
             <ng-template #statNoData><p class="stat-delta stat-delta--muted">Sin datos del mes pasado</p></ng-template>
           </article>
 
           <article class="stat-card">
             <div class="stat-icon stat-icon--fixed">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2" /><path d="M3 9h18M8 2v4M16 2v4" /></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1" /><circle cx="18" cy="21" r="1" /><path d="M2 3h3l2.4 12.4a2 2 0 0 0 2 1.6h8.5a2 2 0 0 0 2-1.6L23 7H6" /></svg>
             </div>
-            <p class="stat-label">Ingresos fijos</p>
+            <p class="stat-label">Gastos fijos</p>
             <p class="stat-value">{{ formatCurrency(totalByType('FIXED')) }}</p>
             <p class="stat-delta" *ngIf="vsLastMonthPct(totalByType('FIXED'), 'FIXED') as pct; else statNoData2">
-              <span [class.up]="pct >= 0" [class.down]="pct < 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
+              <span [class.up]="pct < 0" [class.down]="pct >= 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
             </p>
             <ng-template #statNoData2><p class="stat-delta stat-delta--muted">Sin datos del mes pasado</p></ng-template>
           </article>
 
           <article class="stat-card">
             <div class="stat-icon stat-icon--variable">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-7 4 14 2-7h6" /></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="4" height="10" rx="1" /><rect x="10" y="4" width="4" height="16" rx="1" /><rect x="16" y="13" width="4" height="7" rx="1" /></svg>
             </div>
-            <p class="stat-label">Ingresos variables</p>
+            <p class="stat-label">Gastos variables</p>
             <p class="stat-value">{{ formatCurrency(totalByType('VARIABLE')) }}</p>
             <p class="stat-delta" *ngIf="vsLastMonthPct(totalByType('VARIABLE'), 'VARIABLE') as pct; else statNoData3">
-              <span [class.up]="pct >= 0" [class.down]="pct < 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
+              <span [class.up]="pct < 0" [class.down]="pct >= 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
             </p>
             <ng-template #statNoData3><p class="stat-delta stat-delta--muted">Sin datos del mes pasado</p></ng-template>
           </article>
 
           <article class="stat-card">
             <div class="stat-icon stat-icon--extra">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.9L22 10l-5 5 1.2 7L12 18.8 5.8 22 7 15l-5-5 7.1-1.1z" /></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><circle cx="8" cy="12" r="1" fill="currentColor" /><circle cx="12" cy="12" r="1" fill="currentColor" /><circle cx="16" cy="12" r="1" fill="currentColor" /></svg>
             </div>
-            <p class="stat-label">Ingresos extra</p>
+            <p class="stat-label">Otros gastos</p>
             <p class="stat-value">{{ formatCurrency(totalByType('EXTRAORDINARY')) }}</p>
             <p class="stat-delta" *ngIf="vsLastMonthPct(totalByType('EXTRAORDINARY'), 'EXTRAORDINARY') as pct; else statNoData4">
-              <span [class.up]="pct >= 0" [class.down]="pct < 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
+              <span [class.up]="pct < 0" [class.down]="pct >= 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
             </p>
             <ng-template #statNoData4><p class="stat-delta stat-delta--muted">Sin datos del mes pasado</p></ng-template>
           </article>
         </section>
 
-        <!-- Resumen, mensuales y acciones rápidas -->
+        <!-- Gastos por categoría y acciones rápidas -->
         <section class="mid-grid">
           <article class="panel panel--summary">
-            <h3>Resumen de ingresos</h3>
-            <div class="donut-wrap">
+            <h3>Gastos por categoría</h3>
+            <div class="donut-wrap" *ngIf="categoryBreakdown.length; else noCategoryData">
               <div class="donut" [style.background]="donutGradient">
                 <div class="donut-center">
                   <span>Total</span>
                   <strong>{{ formatCurrency(totalThisMonth) }}</strong>
+                  <small>Este mes</small>
                 </div>
               </div>
               <ul class="donut-legend">
-                <li *ngFor="let b of typeBreakdown">
-                  <span class="legend-dot" [style.background]="typeColor(b.type)"></span>
-                  <span class="legend-label">{{ b.legendLabel }}</span>
+                <li *ngFor="let b of categoryBreakdown">
+                  <span class="legend-dot" [style.background]="b.color"></span>
+                  <span class="legend-label">{{ b.name }}</span>
                   <span class="legend-pct">{{ b.pct | number:'1.1-1' }}%</span>
                   <span class="legend-amount">{{ formatCurrency(b.total) }}</span>
                 </li>
               </ul>
             </div>
-            <p class="panel-caption">Datos del mes en curso</p>
-          </article>
-
-          <article class="panel panel--monthly">
-            <h3>Tu dinero</h3>
-            <ul class="monthly-list">
-              <li class="monthly-item--headline">
-                <p>Este mes ganaste</p>
-                <strong>{{ formatCurrency(totalThisMonth) }}</strong>
-                <span>
-                  Ingresos de {{ currentMonthName }}
-                  <ng-container *ngIf="vsLastMonthPct(totalThisMonth) as pct"> · <span [class.up]="pct >= 0" [class.down]="pct < 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.0-0' }}%</span> vs. mes pasado</ng-container>
-                </span>
-              </li>
-              <li class="monthly-item--headline monthly-item--available">
-                <p>Tienes disponible en total</p>
-                <strong [class.is-positive]="availableTotal >= 0" [class.is-negative]="availableTotal < 0">{{ formatCurrency(availableTotal) }}</strong>
-                <span>Todo lo que has ganado menos todo lo que has gastado, de todos los meses</span>
-              </li>
-              <li>
-                <div class="monthly-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" /></svg></div>
-                <div class="monthly-text">
-                  <p>Promedio diario este mes</p>
-                  <strong>{{ formatCurrency(dailyAverage) }}</strong>
-                </div>
-              </li>
-              <li>
-                <div class="monthly-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2" /><path d="M3 9h18M8 2v4M16 2v4" /></svg></div>
-                <div class="monthly-text">
-                  <p>Días con ingresos este mes</p>
-                  <strong>{{ daysWithIncome }} días</strong>
-                </div>
-              </li>
-            </ul>
+            <ng-template #noCategoryData>
+              <p class="panel-empty">Todavía no hay gastos este mes. Registra uno para ver la distribución por categoría.</p>
+            </ng-template>
           </article>
 
           <article class="panel panel--actions">
             <h3>Acciones rápidas</h3>
-            <button type="button" class="action-btn action-btn--primary" (click)="openIncomeForm()">
+            <button type="button" class="action-btn action-btn--primary" (click)="openExpenseForm()">
               <span class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg></span>
               <span class="action-text">
-                <strong>Registrar un ingreso</strong>
-                <small>Agregar un ingreso manual</small>
+                <strong>Nuevo gasto</strong>
+                <small>Registrar un gasto</small>
               </span>
               <svg class="action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6" /></svg>
             </button>
-            <button type="button" class="action-btn" (click)="openSourceForm()">
-              <span class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6" /></svg></span>
+            <button type="button" class="action-btn" (click)="openCategoryForm()">
+              <span class="action-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 3h8a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg></span>
               <span class="action-text">
-                <strong>Nueva fuente de ingreso</strong>
-                <small>Agregar una nueva fuente</small>
+                <strong>Administrar categorías</strong>
+                <small>Consultar o crear categorías</small>
               </span>
               <svg class="action-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6" /></svg>
             </button>
@@ -264,22 +234,22 @@
 
         <!-- Tabla -->
         <section class="panel panel--table">
-          <h3>Últimos ingresos registrados</h3>
+          <h3>Últimos gastos registrados</h3>
 
-          <div class="table-wrap" *ngIf="incomes.length; else emptyTable">
+          <div class="table-wrap" *ngIf="expenses.length; else emptyTable">
             <table>
               <thead>
-                <tr><th>Fecha</th><th>Descripción</th><th>Tipo</th><th>Fuente</th><th>Monto</th><th></th></tr>
+                <tr><th>Fecha</th><th>Descripción</th><th>Categoría</th><th>Tipo</th><th>Monto</th><th></th></tr>
               </thead>
               <tbody>
-                <tr *ngFor="let income of visibleIncomes">
-                  <td>{{ income.date | date:'dd MMM yyyy' }}</td>
-                  <td>{{ income.description || '—' }}</td>
-                  <td><span class="type-badge" [style.color]="typeColor(income.type)" [style.borderColor]="typeColor(income.type)">{{ typeLabel(income.type) }}</span></td>
-                  <td>{{ income.incomeSourceName }}</td>
-                  <td class="amount-cell">{{ formatCurrency(income.amount) }}</td>
+                <tr *ngFor="let expense of visibleExpenses">
+                  <td>{{ expense.date | date:'dd MMM yyyy' }}</td>
+                  <td>{{ expense.description || '—' }}</td>
+                  <td><span class="cat-badge" [style.color]="categoryColor(expense.categoryName)" [style.borderColor]="categoryColor(expense.categoryName)">{{ expense.categoryName }}</span></td>
+                  <td class="type-cell">{{ typeLabel(expense.type) }}</td>
+                  <td class="amount-cell">{{ formatCurrency(expense.amount) }}</td>
                   <td class="actions-cell">
-                    <button type="button" class="row-action" (click)="deleteIncome(income)" aria-label="Eliminar ingreso">
+                    <button type="button" class="row-action" (click)="deleteExpense(expense)" aria-label="Eliminar gasto">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /></svg>
                     </button>
                   </td>
@@ -289,11 +259,11 @@
           </div>
 
           <ng-template #emptyTable>
-            <p class="table-empty">Aún no has registrado ningún ingreso. Usa "Registrar un ingreso" para agregar el primero.</p>
+            <p class="table-empty">Aún no has registrado ningún gasto. Usa "Nuevo gasto" para agregar el primero.</p>
           </ng-template>
 
-          <button type="button" class="show-more" *ngIf="incomes.length > 5" (click)="showAll = !showAll">
-            {{ showAll ? 'Ver menos' : 'Ver todos los ingresos' }} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6" /></svg>
+          <button type="button" class="show-more" *ngIf="expenses.length > 5" (click)="showAll = !showAll">
+            {{ showAll ? 'Ver menos' : 'Ver todos los gastos' }} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6" /></svg>
           </button>
         </section>
       </ng-container>
@@ -301,19 +271,19 @@
   </div>
 </div>
 
-<!-- Modal: registrar ingreso -->
-<div class="modal-backdrop" *ngIf="showIncomeForm" (click)="closeIncomeForm()">
+<!-- Modal: registrar gasto -->
+<div class="modal-backdrop" *ngIf="showExpenseForm" (click)="closeExpenseForm()">
   <div class="modal" (click)="$event.stopPropagation()">
-    <h3>Registrar un ingreso</h3>
-    <form [formGroup]="incomeForm" (ngSubmit)="submitIncome()">
+    <h3>Registrar un gasto</h3>
+    <form [formGroup]="expenseForm" (ngSubmit)="submitExpense()">
       <label>
-        <span>Fuente</span>
-        <select formControlName="incomeSourceId">
-          <option value="" disabled>Selecciona una fuente</option>
-          <option *ngFor="let s of sources" [value]="s.id">{{ s.name }}</option>
+        <span>Categoría</span>
+        <select formControlName="categoryId">
+          <option value="" disabled>Selecciona una categoría</option>
+          <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
         </select>
       </label>
-      <p class="field-hint" *ngIf="!sources.length">No tienes fuentes todavía — crea una con "Nueva fuente de ingreso".</p>
+      <p class="field-hint" *ngIf="!categories.length">No hay categorías todavía — crea una con "Administrar categorías".</p>
       <label>
         <span>Tipo</span>
         <select formControlName="type">
@@ -328,7 +298,7 @@
       </label>
       <label>
         <span>Descripción (opcional)</span>
-        <input type="text" formControlName="description" placeholder="Ej. Salario mensual" />
+        <input type="text" formControlName="description" placeholder="Ej. Supermercado La Torre" />
       </label>
       <label>
         <span>Fecha</span>
@@ -336,26 +306,44 @@
       </label>
       <p class="form-error" *ngIf="formError">{{ formError }}</p>
       <div class="modal-actions">
-        <button type="button" class="btn-secondary" (click)="closeIncomeForm()">Cancelar</button>
-        <button type="submit" class="btn-primary" [disabled]="incomeForm.invalid || isSubmitting">{{ isSubmitting ? 'Guardando...' : 'Guardar ingreso' }}</button>
+        <button type="button" class="btn-secondary" (click)="closeExpenseForm()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="expenseForm.invalid || isSubmitting">{{ isSubmitting ? 'Guardando...' : 'Guardar gasto' }}</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Modal: nueva fuente -->
-<div class="modal-backdrop" *ngIf="showSourceForm" (click)="closeSourceForm()">
+<!-- Modal: administrar categorías -->
+<div class="modal-backdrop" *ngIf="showCategoryForm" (click)="closeCategoryForm()">
   <div class="modal" (click)="$event.stopPropagation()">
-    <h3>Nueva fuente de ingreso</h3>
-    <form [formGroup]="sourceForm" (ngSubmit)="submitSource()">
+    <h3>Administrar categorías</h3>
+
+    <div class="cat-list" *ngIf="categories.length">
+      <span class="cat-chip" *ngFor="let c of categories" [class.cat-chip--global]="c.userId === null">
+        {{ c.name }}
+        <button
+          *ngIf="c.userId !== null"
+          type="button"
+          class="cat-chip-del"
+          [disabled]="deletingCategoryId === c.id"
+          [attr.aria-label]="'Eliminar categoría ' + c.name"
+          (click)="deleteCategory(c)"
+        >&times;</button>
+      </span>
+    </div>
+    <p class="field-hint" *ngIf="categories.length">Las categorías predeterminadas no se pueden eliminar. Una categoría con gastos registrados tampoco.</p>
+    <p class="field-hint" *ngIf="!categories.length">Todavía no hay categorías. Crea la primera abajo.</p>
+    <p class="form-error" *ngIf="categoryError">{{ categoryError }}</p>
+
+    <form [formGroup]="categoryForm" (ngSubmit)="submitCategory()">
       <label>
-        <span>Nombre</span>
-        <input type="text" formControlName="name" placeholder="Ej. Empresa ABC" />
+        <span>Nueva categoría</span>
+        <input type="text" formControlName="name" placeholder="Ej. Mascotas" />
       </label>
       <p class="form-error" *ngIf="formError">{{ formError }}</p>
       <div class="modal-actions">
-        <button type="button" class="btn-secondary" (click)="closeSourceForm()">Cancelar</button>
-        <button type="submit" class="btn-primary" [disabled]="sourceForm.invalid || isSubmitting">{{ isSubmitting ? 'Guardando...' : 'Crear fuente' }}</button>
+        <button type="button" class="btn-secondary" (click)="closeCategoryForm()">Cerrar</button>
+        <button type="submit" class="btn-primary" [disabled]="categoryForm.invalid || isSubmitting">{{ isSubmitting ? 'Guardando...' : 'Crear categoría' }}</button>
       </div>
     </form>
   </div>

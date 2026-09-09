@@ -167,6 +167,15 @@ $card-border: rgba(255, 255, 255, 0.12);
 .stat-caption .up { color: #4ade80; font-weight: 700; }
 .stat-caption .down { color: #ff8098; font-weight: 700; }
 
+.stat-value--available.is-positive { color: #4ade80; }
+.stat-value--available.is-negative { color: #ff8098; }
+
+// "Tienes disponible" es el número que el cliente busca primero: etiqueta
+// más marcada y un realce sutil en verde.
+.stat-block--highlight h3 { color: #fff; }
+.stat-block--highlight .stat-value--sm { font-weight: 700; }
+.stat-caption-month { color: rgba(255, 255, 255, 0.8); }
+
 .card-caption {
   margin: 14px 0 0;
   color: rgba(255, 255, 255, 0.55);
@@ -174,8 +183,9 @@ $card-border: rgba(255, 255, 255, 0.12);
   line-height: 1.4;
 }
 
-// Donut vacío: un solo anillo gris parejo — todavía no hay categorías
-// de gasto que repartir (eso llega en la Etapa 6).
+// Donut sin datos: un solo anillo gris parejo. Con datos (.donut--filled)
+// se pinta con el conic-gradient de gastos por categoría y se le "recorta"
+// el centro con una máscara radial para que se vea como anillo.
 .donut {
   width: 150px;
   height: 150px;
@@ -183,6 +193,48 @@ $card-border: rgba(255, 255, 255, 0.12);
   border: 14px solid rgba(255, 255, 255, 0.12);
   border-radius: 50%;
   box-sizing: border-box;
+}
+
+.donut--filled {
+  border: 0;
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 41%, #000 42%);
+  mask: radial-gradient(circle at 50% 50%, transparent 41%, #000 42%);
+}
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.donut-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.legend-swatch {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.legend-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.legend-pct {
+  color: rgba(255, 255, 255, 0.6);
+  font-variant-numeric: tabular-nums;
 }
 
 .chart-legend {
