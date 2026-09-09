@@ -3,6 +3,7 @@ import type {
   CreateExpenseInput,
   UpdateExpenseInput,
   ExpenseOutput,
+  ExpenseType,
   CreateExpenseCategoryInput,
   ExpenseCategoryOutput,
 } from './expenses.types.js';
@@ -12,6 +13,7 @@ function toExpenseOutput(expense: {
   userId: number;
   categoryId: number;
   category: { name: string };
+  type: string;
   amount: unknown;
   description: string | null;
   date: Date;
@@ -22,6 +24,7 @@ function toExpenseOutput(expense: {
     userId: expense.userId,
     categoryId: expense.categoryId,
     categoryName: expense.category.name,
+    type: expense.type as ExpenseType,
     amount: (expense.amount as { toString(): string }).toString(),
     description: expense.description,
     date: expense.date,
@@ -46,6 +49,28 @@ export const expensesService = {
     return { id: category.id, name: category.name, userId: category.userId };
   },
 
+  async deleteCategory(userId: number, id: number): Promise<void> {
+    const category = await expensesRepository.findCategoryById(id);
+    if (!category) {
+      throw new Error('EXPENSE_CATEGORY_NOT_FOUND');
+    }
+    // Las categorías globales (userId null, vienen del seed) no se pueden borrar.
+    if (category.userId === null) {
+      throw new Error('EXPENSE_CATEGORY_GLOBAL');
+    }
+    // Un usuario solo puede borrar sus propias categorías.
+    if (category.userId !== userId) {
+      throw new Error('EXPENSE_CATEGORY_NOT_FOUND');
+    }
+    // No se puede borrar una categoría que todavía tiene gastos asociados.
+    const inUse = await expensesRepository.countExpensesForCategory(id);
+    if (inUse > 0) {
+      throw new Error('EXPENSE_CATEGORY_IN_USE');
+    }
+
+    await expensesRepository.deleteCategory(id);
+  },
+
   async create(userId: number, input: CreateExpenseInput): Promise<ExpenseOutput> {
     const category = await expensesRepository.findCategoryById(input.categoryId);
     if (!category) {
@@ -57,6 +82,7 @@ export const expensesService = {
 
     const expense = await expensesRepository.create(userId, {
       categoryId: input.categoryId,
+      type: input.type,
       amount: input.amount,
       date: new Date(input.date),
       ...(input.description !== undefined && { description: input.description }),
@@ -86,6 +112,7 @@ export const expensesService = {
 
     const data: Record<string, unknown> = {};
     if (input.categoryId !== undefined) data.categoryId = input.categoryId;
+    if (input.type !== undefined) data.type = input.type;
     if (input.amount !== undefined) data.amount = input.amount;
     if (input.description !== undefined) data.description = input.description;
     if (input.date !== undefined) data.date = new Date(input.date);

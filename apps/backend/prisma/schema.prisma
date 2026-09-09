@@ -20,6 +20,12 @@ enum IncomeType {
   EXTRAORDINARY
 }
 
+enum ExpenseType {
+  FIXED
+  VARIABLE
+  EXTRAORDINARY
+}
+
 enum TaxType {
   ISR
   IGSS
@@ -92,6 +98,7 @@ model Expense {
   user        User            @relation(fields: [userId], references: [id])
   categoryId  Int
   category    ExpenseCategory @relation(fields: [categoryId], references: [id])
+  type        ExpenseType     @default(VARIABLE)
   amount      Decimal         @db.Decimal(14, 2)
   description String?
   date        DateTime
