@@ -3,6 +3,7 @@ import { authGuard } from './core/auth/auth.guard';
 import { LoginComponent } from './features/auth/login/login.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { IncomeComponent } from './features/income/income.component';
+import { ExpensesComponent } from './features/expenses/expenses.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -14,6 +15,11 @@ export const routes: Routes = [
   {
     path: 'ingresos',
     component: IncomeComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'gastos',
+    component: ExpensesComponent,
     canActivate: [authGuard],
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
