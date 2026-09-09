@@ -1,3 +1,5 @@
+export type ExpenseType = 'FIXED' | 'VARIABLE' | 'EXTRAORDINARY';
+
 export interface ExpenseCategoryOutput {
   id: number;
   name: string;
@@ -10,6 +12,7 @@ export interface CreateExpenseCategoryInput {
 
 export interface CreateExpenseInput {
   categoryId: number;
+  type: ExpenseType;
   amount: string;
   description?: string;
   date: string;
@@ -17,6 +20,7 @@ export interface CreateExpenseInput {
 
 export interface UpdateExpenseInput {
   categoryId?: number;
+  type?: ExpenseType;
   amount?: string;
   description?: string;
   date?: string;
@@ -27,6 +31,7 @@ export interface ExpenseOutput {
   userId: number;
   categoryId: number;
   categoryName: string;
+  type: ExpenseType;
   amount: string;
   description: string | null;
   date: Date;

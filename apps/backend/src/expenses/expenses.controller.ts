@@ -10,6 +10,12 @@ function handleError(err: unknown, res: Response) {
     if (err.message === 'EXPENSE_CATEGORY_NOT_FOUND') {
       return res.status(404).json({ error: 'Categoría no encontrada' });
     }
+    if (err.message === 'EXPENSE_CATEGORY_GLOBAL') {
+      return res.status(403).json({ error: 'No puedes eliminar una categoría predeterminada' });
+    }
+    if (err.message === 'EXPENSE_CATEGORY_IN_USE') {
+      return res.status(409).json({ error: 'Esta categoría tiene gastos registrados. Elimina o reasigna esos gastos primero.' });
+    }
   }
   console.error(err);
   return res.status(500).json({ error: 'Error interno del servidor' });
@@ -42,17 +48,34 @@ export const expensesController = {
     }
   },
 
+  async removeCategory(req: Request, res: Response) {
+    const userId = req.auth!.userId;
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    try {
+      await expensesService.deleteCategory(userId, id);
+      return res.status(204).send();
+    } catch (err) {
+      return handleError(err, res);
+    }
+  },
+
   async create(req: Request, res: Response) {
     const userId = req.auth!.userId;
-    const { categoryId, amount, description, date } = req.body;
+    const { categoryId, type, amount, description, date } = req.body;
 
-    if (!categoryId || !amount || !date) {
+    if (!categoryId || !type || !amount || !date) {
       return res.status(400).json({ error: 'Faltan campos requeridos' });
     }
 
     try {
       const expense = await expensesService.create(userId, {
         categoryId: Number(categoryId),
+        type,
         amount: String(amount),
         date,
         ...(description !== undefined && { description }),
@@ -97,11 +120,12 @@ export const expensesController = {
       return res.status(400).json({ error: 'ID inválido' });
     }
 
-    const { categoryId, amount, description, date } = req.body;
+    const { categoryId, type, amount, description, date } = req.body;
 
     try {
       const input: UpdateExpenseInput = {
         ...(categoryId !== undefined && { categoryId: Number(categoryId) }),
+        ...(type !== undefined && { type }),
         ...(amount !== undefined && { amount: String(amount) }),
         ...(description !== undefined && { description }),
         ...(date !== undefined && { date }),

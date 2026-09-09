@@ -21,9 +21,18 @@ export const expensesRepository = {
     });
   },
 
+  countExpensesForCategory(categoryId: number) {
+    return prisma.expense.count({ where: { categoryId } });
+  },
+
+  deleteCategory(id: number) {
+    return prisma.expenseCategory.delete({ where: { id } });
+  },
+
   // Gastos
   create(userId: number, data: {
     categoryId: number;
+    type: 'FIXED' | 'VARIABLE' | 'EXTRAORDINARY';
     amount: string;
     description?: string;
     date: Date;
@@ -51,6 +60,7 @@ export const expensesRepository = {
 
   update(id: number, data: Partial<{
     categoryId: number;
+    type: 'FIXED' | 'VARIABLE' | 'EXTRAORDINARY';
     amount: string;
     description: string;
     date: Date;
