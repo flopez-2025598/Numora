@@ -8,6 +8,7 @@ expensesRoutes.use(requireAuth);
 
 expensesRoutes.get('/categories', expensesController.listCategories);
 expensesRoutes.post('/categories', expensesController.createCategory);
+expensesRoutes.delete('/categories/:id', expensesController.removeCategory);
 
 expensesRoutes.get('/', expensesController.list);
 expensesRoutes.post('/', expensesController.create);
