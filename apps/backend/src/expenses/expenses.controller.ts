@@ -16,6 +16,12 @@ function handleError(err: unknown, res: Response) {
     if (err.message === 'EXPENSE_CATEGORY_IN_USE') {
       return res.status(409).json({ error: 'Esta categoría tiene gastos registrados. Elimina o reasigna esos gastos primero.' });
     }
+    if (err.message === 'FUTURE_DATE') {
+      return res.status(400).json({ error: 'No puedes registrar un gasto con una fecha que aún no ha llegado' });
+    }
+    if (err.message === 'INSUFFICIENT_FUNDS') {
+      return res.status(409).json({ error: 'No puedes gastar más de lo que tienes disponible' });
+    }
   }
   console.error(err);
   return res.status(500).json({ error: 'Error interno del servidor' });

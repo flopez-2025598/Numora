@@ -296,14 +296,16 @@
         <span>Monto (Q)</span>
         <input type="number" step="0.01" min="0.01" formControlName="amount" placeholder="0.00" />
       </label>
+      <p class="field-hint">Tienes disponible {{ formatCurrency(availableTotal) }}.</p>
       <label>
         <span>Descripción (opcional)</span>
         <input type="text" formControlName="description" placeholder="Ej. Supermercado La Torre" />
       </label>
       <label>
         <span>Fecha</span>
-        <input type="date" formControlName="date" />
+        <input type="date" formControlName="date" [max]="maxDate" />
       </label>
+      <p class="field-hint" *ngIf="expenseForm.controls.date.hasError('futureDate')">No puedes registrar un gasto con una fecha que aún no ha llegado.</p>
       <p class="form-error" *ngIf="formError">{{ formError }}</p>
       <div class="modal-actions">
         <button type="button" class="btn-secondary" (click)="closeExpenseForm()">Cancelar</button>

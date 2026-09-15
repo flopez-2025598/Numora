@@ -1,4 +1,6 @@
+import { Decimal } from 'decimal.js';
 import { expensesRepository } from './expenses.repository.js';
+import { isFutureDate } from '../shared/date.util.js';
 import type {
   CreateExpenseInput,
   UpdateExpenseInput,
@@ -72,12 +74,24 @@ export const expensesService = {
   },
 
   async create(userId: number, input: CreateExpenseInput): Promise<ExpenseOutput> {
+    // No se puede registrar un gasto con una fecha que aún no ha llegado.
+    if (isFutureDate(input.date)) {
+      throw new Error('FUTURE_DATE');
+    }
+
     const category = await expensesRepository.findCategoryById(input.categoryId);
     if (!category) {
       throw new Error('EXPENSE_CATEGORY_NOT_FOUND');
     }
     if (category.userId !== null && category.userId !== userId) {
       throw new Error('EXPENSE_CATEGORY_NOT_FOUND');
+    }
+
+    // No se puede gastar más de lo que se tiene disponible (ingresos - gastos).
+    const { incomeTotal, expenseTotal } = await expensesRepository.userTotals(userId);
+    const available = new Decimal(incomeTotal).minus(expenseTotal);
+    if (new Decimal(input.amount).greaterThan(available)) {
+      throw new Error('INSUFFICIENT_FUNDS');
     }
 
     const expense = await expensesRepository.create(userId, {

@@ -332,8 +332,9 @@
       </label>
       <label>
         <span>Fecha</span>
-        <input type="date" formControlName="date" />
+        <input type="date" formControlName="date" [max]="maxDate" />
       </label>
+      <p class="field-hint" *ngIf="incomeForm.controls.date.hasError('futureDate')">No puedes registrar un ingreso con una fecha que aún no ha llegado.</p>
       <p class="form-error" *ngIf="formError">{{ formError }}</p>
       <div class="modal-actions">
         <button type="button" class="btn-secondary" (click)="closeIncomeForm()">Cancelar</button>

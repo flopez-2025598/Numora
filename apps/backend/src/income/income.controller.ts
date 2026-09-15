@@ -10,6 +10,9 @@ function handleError(err: unknown, res: Response) {
     if (err.message === 'INCOME_SOURCE_NOT_FOUND') {
       return res.status(404).json({ error: 'Fuente de ingreso no encontrada' });
     }
+    if (err.message === 'FUTURE_DATE') {
+      return res.status(400).json({ error: 'No puedes registrar un ingreso con una fecha que aún no ha llegado' });
+    }
   }
   console.error(err);
   return res.status(500).json({ error: 'Error interno del servidor' });

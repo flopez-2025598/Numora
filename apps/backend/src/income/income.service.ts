@@ -1,4 +1,5 @@
 import { incomeRepository } from './income.repository.js';
+import { isFutureDate } from '../shared/date.util.js';
 import type {
   CreateIncomeInput,
   UpdateIncomeInput,
@@ -49,6 +50,11 @@ export const incomeService = {
   },
 
   async create(userId: number, input: CreateIncomeInput): Promise<IncomeOutput> {
+    // No se puede registrar un ingreso con fecha futura: solo cuenta lo ya recibido.
+    if (isFutureDate(input.date)) {
+      throw new Error('FUTURE_DATE');
+    }
+
     const source = await incomeRepository.findSourceById(input.incomeSourceId);
     if (!source) {
       throw new Error('INCOME_SOURCE_NOT_FOUND');
