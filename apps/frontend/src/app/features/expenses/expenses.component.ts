@@ -7,6 +7,9 @@ import type { AuthUser } from '../../core/auth/auth.model';
 import { ExpenseService } from '../../core/expense/expense.service';
 import type { Expense, ExpenseCategory, ExpenseType } from '../../core/expense/expense.model';
 import { buildCategoryBreakdown, categoryDonutGradient, OTHER_COLOR } from '../../core/expense/expense.util';
+import { IncomeService } from '../../core/income/income.service';
+import type { Income } from '../../core/income/income.model';
+import { notFutureDate, todayISO } from '../../core/validators';
 
 const TYPE_LABELS: Record<ExpenseType, string> = {
   FIXED: 'Fijo',
@@ -24,6 +27,7 @@ const TYPE_LABELS: Record<ExpenseType, string> = {
 export class ExpensesComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly expenseService = inject(ExpenseService);
+  private readonly incomeService = inject(IncomeService);
   private readonly fb = inject(FormBuilder);
   private readonly cdr = inject(ChangeDetectorRef);
 
@@ -33,6 +37,7 @@ export class ExpensesComponent implements OnInit {
   protected errorMessage = '';
 
   protected expenses: Expense[] = [];
+  protected incomes: Income[] = [];
   protected categories: ExpenseCategory[] = [];
   protected showAll = false;
 
@@ -48,8 +53,14 @@ export class ExpensesComponent implements OnInit {
     type: ['VARIABLE' as ExpenseType, Validators.required],
     amount: ['', [Validators.required, Validators.min(0.01)]],
     description: [''],
-    date: [this.today(), Validators.required],
+    date: [this.today(), [Validators.required, notFutureDate]],
   });
+
+  // Para el atributo [max] del <input type="date">: no deja programar un gasto
+  // en una fecha que aún no ha llegado.
+  protected get maxDate(): string {
+    return todayISO();
+  }
 
   protected readonly categoryForm = this.fb.group({
     name: ['', Validators.required],
@@ -61,7 +72,7 @@ export class ExpensesComponent implements OnInit {
   }
 
   private today(): string {
-    return new Date().toISOString().slice(0, 10);
+    return todayISO();
   }
 
   protected toggleMenu(): void {
@@ -95,6 +106,18 @@ export class ExpensesComponent implements OnInit {
       },
     });
 
+    // Los ingresos se usan solo para calcular el dinero disponible
+    // (ingresos - gastos) y no dejar gastar de más.
+    this.incomeService.list().subscribe({
+      next: (incomes) => {
+        this.incomes = incomes;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        // silencioso: si falla, availableTotal queda como -total de gastos
+      },
+    });
+
     this.expenseService.list().subscribe({
       next: (expenses) => {
         this.expenses = expenses;
@@ -108,6 +131,12 @@ export class ExpensesComponent implements OnInit {
         this.cdr.detectChanges();
       },
     });
+  }
+
+  // Dinero disponible = todos los ingresos - todos los gastos (todo el historial).
+  protected get availableTotal(): number {
+    const incomeTotal = this.incomes.reduce((acc, i) => acc + Number(i.amount), 0);
+    return incomeTotal - this.sum(this.expenses);
   }
 
   // --- Cálculos derivados de los datos reales (nada hardcodeado) ---
@@ -209,6 +238,13 @@ export class ExpensesComponent implements OnInit {
     }
 
     const { categoryId, type, amount, description, date } = this.expenseForm.getRawValue();
+
+    // No se puede gastar más de lo que se tiene disponible.
+    if (Number(amount) > this.availableTotal) {
+      this.formError = `No puedes gastar más de lo que tienes disponible (${this.formatCurrency(this.availableTotal)}).`;
+      return;
+    }
+
     this.isSubmitting = true;
     this.formError = '';
 

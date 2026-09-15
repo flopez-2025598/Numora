@@ -5,8 +5,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
+import { AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { GOOGLE_CLIENT_ID } from '../../../../google-auth.config';
 
 const strongPasswordPattern = /^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?!.*\s).*$/;
+
+declare const google: any;
 
 interface MathSymbol {
   t: string;
@@ -76,7 +80,8 @@ const BAR_HEIGHTS = [12, 19, 27, 38, 49, 63, 78, 93, 109, 124, 139, 154, 167, 18
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
+export class LoginComponent implements AfterViewInit {
+  @ViewChild('googleBtn', { static: true }) googleBtn!: ElementRef<HTMLDivElement>;
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -180,5 +185,27 @@ export class LoginComponent {
     this.errorMessage = error.error?.error ?? fallbackMessage;
     this.alertType = 'error';
     this.cdr.detectChanges();
+  }
+
+  ngAfterViewInit(): void {
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: this.handleGoogleSignIn.bind(this),
+    });
+
+    google.accounts.id.renderButton(this.googleBtn.nativeElement, {
+      theme: 'outline',
+      size: 'large',
+      type: 'standard',
+    });
+  }
+
+private handleGoogleSignIn(response: { credential: string }): void {
+  this.isSubmitting = true;
+  this.errorMessage = '';
+  this.authService.loginWithGoogle(response.credential).subscribe({
+    next: () => this.router.navigateByUrl('/dashboard'),
+    error: (error: HttpErrorResponse) => this.showError(error, 'No se pudo iniciar sesión con Google.'),
+    });
   }
 }

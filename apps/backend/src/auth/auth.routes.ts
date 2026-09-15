@@ -4,6 +4,7 @@ import { requireAuth } from '../middlewares/auth.middleware.js';
 
 export const authRoutes: Router = Router();
 
+authRoutes.post('/google', authController.google);
 authRoutes.post('/register', authController.register);
 authRoutes.post('/login', authController.login);
 authRoutes.get('/me', requireAuth, authController.me);

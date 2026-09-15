@@ -7,7 +7,7 @@ import { IncomeService } from '../../core/income/income.service';
 import type { Income } from '../../core/income/income.model';
 import { ExpenseService } from '../../core/expense/expense.service';
 import type { Expense } from '../../core/expense/expense.model';
-import { buildCategoryBreakdown, categoryDonutGradient, type CategorySlice } from '../../core/expense/expense.util';
+import { buildExpenseTypeBreakdown, categoryDonutGradient, type CategorySlice } from '../../core/expense/expense.util';
 
 // Fila mínima que comparten ingresos y gastos para los cálculos por mes.
 type DatedAmount = { amount: string; date: string };
@@ -108,8 +108,9 @@ export class DashboardComponent implements OnInit {
   }
 
   private isInMonth(dateStr: string, ref: Date): boolean {
-    const d = new Date(dateStr);
-    return d.getFullYear() === ref.getFullYear() && d.getMonth() === ref.getMonth();
+    // Las fechas contables se guardan como fecha ISO a medianoche UTC.
+    const [year, month] = dateStr.slice(0, 10).split('-').map(Number);
+    return year === ref.getFullYear() && month === ref.getMonth() + 1;
   }
 
   private sumInMonth(list: DatedAmount[], ref: Date): number {
@@ -140,20 +141,6 @@ export class DashboardComponent implements OnInit {
     return this.vsLastMonthPct(this.incomes);
   }
 
-  // Dinero disponible TOTAL = todos los ingresos - todos los gastos, sin
-  // filtrar por mes. Así el saldo acumulado de meses anteriores cuenta.
-  protected get totalIncomeAllTime(): number {
-    return this.incomes.reduce((acc, row) => acc + Number(row.amount), 0);
-  }
-
-  protected get totalExpenseAllTime(): number {
-    return this.expenses.reduce((acc, row) => acc + Number(row.amount), 0);
-  }
-
-  protected get availableTotal(): number {
-    return this.totalIncomeAllTime - this.totalExpenseAllTime;
-  }
-
   // Gastos
   protected get hasAnyExpense(): boolean {
     return this.expenses.length > 0;
@@ -176,29 +163,14 @@ export class DashboardComponent implements OnInit {
     return (this.totalExpenseThisMonth / income) * 100;
   }
 
-  // Gastos del mes agrupados por categoría (para la dona de la tarjeta).
-  protected get expenseCategoryBreakdown(): CategorySlice[] {
-    const palette = ['#000000', '#38b6ff', '#ffffff'];
-    const categories = buildCategoryBreakdown(
-      this.expenses.filter((e) => this.isInMonth(e.date, this.now)),
+  protected get expenseTypeBreakdown(): CategorySlice[] {
+    return buildExpenseTypeBreakdown(
+      this.expenses.filter((expense) => this.isInMonth(expense.date, this.now)),
     );
-    // La maqueta usa tres segmentos: agrupamos el resto para no repetir colores.
-    const slices = categories.length > 3
-      ? [
-          ...categories.slice(0, 2),
-          {
-            name: 'Otros',
-            color: palette[2],
-            total: categories.slice(2).reduce((sum, slice) => sum + slice.total, 0),
-            pct: categories.slice(2).reduce((sum, slice) => sum + slice.pct, 0),
-          },
-        ]
-      : categories;
-    return slices.map((slice, index) => ({ ...slice, color: palette[index] }));
   }
 
   protected get expenseDonutGradient(): string {
-    return categoryDonutGradient(this.expenseCategoryBreakdown);
+    return categoryDonutGradient(this.expenseTypeBreakdown);
   }
 
   // --- Series para las gráficas de barras y de tendencia ---

@@ -25,6 +25,22 @@ export const authController = {
     
   },
 
+  async google(req: Request, res: Response) {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({ error: 'Faltan campos requeridos' });
+    }
+
+    try {
+      const result = await authService.loginWithGoogle(credential);
+      return res.status(200).json(result);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  },
+
   async login(req: Request, res: Response) {
     const { email, password } = req.body;
 

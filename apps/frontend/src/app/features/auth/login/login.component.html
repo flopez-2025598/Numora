@@ -199,16 +199,6 @@
           </button>
         </div>
 
-        <div class="nl-secure">
-          <div class="nl-secure-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="4" y="11" width="16" height="10" rx="2" />
-              <path d="M8 11V7a4 4 0 1 1 8 0v4" />
-            </svg>
-          </div>
-          <span>{{ isRegistering ? 'CREA TU CUENTA' : 'ACCESO SEGURO' }}</span>
-        </div>
-
         <h2>{{ isRegistering ? 'Registrate en Numora' : 'Iniciar sesión' }}</h2>
         <p>{{ isRegistering ? 'Completa tus datos para comenzar.' : 'Ingresa tus datos para continuar.' }}</p>
 
@@ -260,6 +250,18 @@
             </svg>
           </button>
         </form>
+
+                <div class="nl-secure">
+          <div class="nl-secure-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="11" width="16" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 1 1 8 0v4" />
+            </svg>
+          </div>
+          <span>{{ isRegistering ? 'CREA TU CUENTA' : 'ACCESO SEGURO' }}</span>
+        </div>
+
+        <div #googleBtn></div>
 
         <ng-template #registerForm>
           <form [formGroup]="registrationForm" (ngSubmit)="submitRegistration()" novalidate>
