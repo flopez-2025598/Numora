@@ -25,6 +25,19 @@ export const expensesRepository = {
     return prisma.expense.count({ where: { categoryId } });
   },
 
+  // Suma de todos los ingresos y de todos los gastos del usuario, para saber
+  // cuánto dinero tiene disponible (ingresos - gastos).
+  async userTotals(userId: number): Promise<{ incomeTotal: string; expenseTotal: string }> {
+    const [income, expense] = await Promise.all([
+      prisma.income.aggregate({ _sum: { amount: true }, where: { userId } }),
+      prisma.expense.aggregate({ _sum: { amount: true }, where: { userId } }),
+    ]);
+    return {
+      incomeTotal: income._sum.amount?.toString() ?? '0',
+      expenseTotal: expense._sum.amount?.toString() ?? '0',
+    };
+  },
+
   deleteCategory(id: number) {
     return prisma.expenseCategory.delete({ where: { id } });
   },

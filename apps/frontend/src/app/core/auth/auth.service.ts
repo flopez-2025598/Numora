@@ -32,6 +32,12 @@ export class AuthService {
     );
   }
 
+  loginWithGoogle(credential: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${API_BASE_URL}/auth/google`, { credential }).pipe(
+      tap((response) => this.storeSession(response)),
+    );
+  }
+
   register(payload: RegisterRequest): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${API_BASE_URL}/auth/register`, payload);
   }

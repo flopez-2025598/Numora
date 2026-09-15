@@ -2,6 +2,9 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { authRepository } from './auth.repository.js';
 import type { RegisterInput, LoginInput, AuthUser } from './auth.types.js';
+import { OAuth2Client } from 'google-auth-library';
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const SALT_ROUNDS = 10;
 
@@ -60,9 +63,50 @@ export const authService = {
     };
   },
 
+  async loginWithGoogle(googleToken: string): Promise<{ user: AuthUser; token: string }> {
+    const audience = process.env.GOOGLE_CLIENT_ID;
+    if (!audience) {
+      throw new Error('GOOGLE_CLIENT_ID no está definida. Revisa tu archivo .env');
+    }
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken: googleToken,
+      audience,
+    });
+
+    const payload = ticket.getPayload();
+    if (!payload || !payload.email) {
+      throw new Error('INVALID_GOOGLE_TOKEN');
+    }
+
+    const { sub: googleId, name, email } = payload;
+    const fullName = name ?? email;
+
+    let user = await authRepository.findByGoogleId(googleId);
+
+    if (!user) {
+      const existingByEmail = await authRepository.findByEmail(email);
+      user = existingByEmail
+        ? await authRepository.linkGoogleId(existingByEmail.id, googleId)
+        : await authRepository.createFromGoogle({ fullName, email, googleId });
+    }
+
+    const token = signToken(user.id, user.role);
+
+    return {
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+      },
+      token,
+    };
+  },
+
   async login(input: LoginInput): Promise<{ user: AuthUser; token: string }> {
     const user = await authRepository.findByEmail(input.email);
-    if (!user) {
+    if (!user || !user.passwordHash) {
       throw new Error('INVALID_CREDENTIALS');
     }
 

@@ -146,17 +146,19 @@
             <span [class.up]="pct < 0" [class.down]="pct >= 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.1-1' }}%</span> vs. mes pasado
           </p>
           <ng-template #expenseNoData><p class="stat-caption">Sin datos del mes pasado</p></ng-template>
-          <p class="card-caption">Gastos por categoría</p>
+          <p class="card-caption">Gastos por tipo · {{ currentMonthName }}</p>
           <div
             class="donut"
-            [class.donut--filled]="hasAnyExpense"
-            [style.background]="hasAnyExpense ? expenseDonutGradient : null"
+            [class.donut--filled]="totalExpenseThisMonth > 0"
+            [style.background]="expenseDonutGradient"
             aria-hidden="true"
           ></div>
-          <ul class="donut-legend" *ngIf="hasAnyExpense">
-            <li *ngFor="let c of expenseCategoryBreakdown | slice:0:5">
+          <p class="card-caption" *ngIf="totalExpenseThisMonth === 0">Sin gastos este mes.</p>
+          <ul class="donut-legend">
+            <li *ngFor="let c of expenseTypeBreakdown">
               <span class="legend-swatch" [style.background]="c.color"></span>
               <span class="legend-name">{{ c.name }}</span>
+              <span>{{ formatCurrency(c.total) }}</span>
               <span class="legend-pct">{{ c.pct | number:'1.0-0' }}%</span>
             </li>
           </ul>
@@ -197,15 +199,6 @@
               <span class="stat-caption-month">Ingresos de {{ currentMonthName }}</span>
               <span *ngIf="incomeVsLastMonthPct as pct"> · <span [class.up]="pct >= 0" [class.down]="pct < 0">{{ pct >= 0 ? '↑' : '↓' }} {{ (pct >= 0 ? pct : -pct) | number:'1.0-0' }}%</span> vs. mes pasado</span>
             </p>
-          </div>
-          <div class="stat-block stat-block--highlight">
-            <h3>Tienes disponible</h3>
-            <p
-              class="stat-value stat-value--sm stat-value--available"
-              [class.is-positive]="availableTotal >= 0"
-              [class.is-negative]="availableTotal < 0"
-            >{{ formatCurrency(availableTotal) }}</p>
-            <p class="stat-caption">Todo lo que has ganado menos todo lo que has gastado, de todos los meses.</p>
           </div>
           <div class="stat-block">
             <h3>Fondo de emergencia</h3>

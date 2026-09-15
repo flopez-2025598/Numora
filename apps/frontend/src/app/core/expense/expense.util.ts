@@ -60,3 +60,22 @@ export function categoryDonutGradient(slices: CategorySlice[]): string {
   });
   return `conic-gradient(${stops.join(', ')})`;
 }
+
+/** Colores constantes por tipo, independientemente del monto o la categoría. */
+export function buildExpenseTypeBreakdown(
+  expenses: Pick<Expense, 'type' | 'amount'>[],
+): CategorySlice[] {
+  const types = [
+    { type: 'FIXED', name: 'Fijos', color: '#000000' },
+    { type: 'VARIABLE', name: 'Variables', color: '#38b6ff' },
+    { type: 'EXTRAORDINARY', name: 'Extraordinarios', color: '#ffffff' },
+  ] as const;
+  const slices = types.map(({ type, name, color }) => ({
+    name,
+    color,
+    total: expenses.filter((expense) => expense.type === type)
+      .reduce((sum, expense) => sum + Number(expense.amount), 0),
+  }));
+  const total = slices.reduce((sum, slice) => sum + slice.total, 0);
+  return slices.map((slice) => ({ ...slice, pct: total > 0 ? slice.total / total * 100 : 0 }));
+}

@@ -8,6 +8,7 @@ import { IncomeService } from '../../core/income/income.service';
 import type { Income, IncomeSource, IncomeType } from '../../core/income/income.model';
 import { ExpenseService } from '../../core/expense/expense.service';
 import type { Expense } from '../../core/expense/expense.model';
+import { notFutureDate, todayISO } from '../../core/validators';
 
 interface TypeBreakdown {
   type: IncomeType;
@@ -69,8 +70,13 @@ export class IncomeComponent implements OnInit {
     type: ['FIXED' as IncomeType, Validators.required],
     amount: ['', [Validators.required, Validators.min(0.01)]],
     description: [''],
-    date: [this.today(), Validators.required],
+    date: [this.today(), [Validators.required, notFutureDate]],
   });
+
+  // Para el atributo [max] del <input type="date">: no deja elegir fechas futuras.
+  protected get maxDate(): string {
+    return todayISO();
+  }
 
   protected readonly sourceForm = this.fb.group({
     name: ['', Validators.required],
@@ -82,7 +88,7 @@ export class IncomeComponent implements OnInit {
   }
 
   private today(): string {
-    return new Date().toISOString().slice(0, 10);
+    return todayISO();
   }
 
   protected toggleMenu(): void {
