@@ -1,0 +1,501 @@
+// Mismo lenguaje visual que Gastos / Ingresos / Presupuestos / Dashboard.
+
+$bg-start: #050818;
+$bg-mid: #141c4a;
+$bg-end: #2c3aa0;
+$cyan: #2dd4ee;
+$card-bg: rgba(255, 255, 255, 0.06);
+$card-border: rgba(255, 255, 255, 0.12);
+$good: #4ade80;
+$bad: #ff8098;
+$purple: #a855f7;
+
+.taxes-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(45, 212, 238, 0.14), transparent 40%),
+    radial-gradient(circle at 90% 85%, rgba(120, 70, 220, 0.22), transparent 45%),
+    linear-gradient(135deg, $bg-start 0%, $bg-mid 45%, $bg-end 100%);
+  color: #fff;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.taxes-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 32px;
+}
+
+.menu-toggle {
+  display: grid;
+  place-items: center;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.menu-toggle:hover .menu-icon {
+  filter: brightness(1.3) drop-shadow(0 0 6px rgba(45, 212, 238, 0.5));
+}
+
+.menu-icon {
+  width: 40px;
+  height: auto;
+  mix-blend-mode: screen;
+  transition: transform 0.25s ease;
+}
+
+.menu-icon--open { transform: rotate(180deg); }
+
+.brand { display: flex; align-items: center; margin-left: 12px; }
+.brand-logo { height: 56px; width: auto; }
+
+.page-title {
+  margin: 0 0 0 auto;
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.taxes-body {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+  padding: 0 24px 32px;
+}
+
+// --- Sidebar (idéntico al de Gastos / Ingresos / Presupuestos / Dashboard) ---
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  min-height: 610px;
+  box-sizing: border-box;
+  flex: none;
+  gap: 12px;
+  padding: 18px 16px 10px;
+  border: 0;
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(78, 79, 103, .96), rgba(51, 53, 78, .96) 58%, rgba(57, 57, 91, .96));
+  backdrop-filter: blur(18px);
+}
+
+.sidebar-profile { display: flex; align-items: center; gap: 14px; min-height: 66px; }
+
+.avatar {
+  flex: none;
+  width: 66px;
+  height: 66px;
+  border: 2px solid rgba(255, 255, 255, .5);
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+}
+
+.sidebar-welcome {
+  margin: 0;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -.025em;
+}
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 0; }
+
+.nav-group {
+  padding: 8px 6px 9px;
+  border-bottom: 2px solid rgba(255, 255, 255, .17);
+}
+.nav-group:first-child { padding-top: 4px; }
+
+.nav-group-title {
+  margin: 0 0 3px;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+
+.nav-group ul { display: flex; flex-direction: column; gap: 0; margin: 0; padding: 0; list-style: none; }
+
+.nav-item,
+.nav-item--active,
+.nav-item--disabled {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 32px;
+  padding: 2px 0;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 400;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: color 0.16s ease, transform 0.16s ease;
+}
+
+.nav-item a,
+.nav-item--active a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-icon { flex: none; width: 24px; height: 24px; stroke-width: 2.2; }
+
+.nav-item--active a { color: $cyan; font-weight: 700; }
+.nav-item--disabled { color: rgba(255, 255, 255, 0.35); }
+
+.nav-item:not(.nav-item--active):not(.nav-item--disabled) a:hover {
+  color: $cyan;
+  transform: translateX(2px);
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  margin: auto 8px 0;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(90deg, rgba(139, 140, 157, .72), rgba(126, 126, 161, .8));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .09);
+  color: #fff;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.logout-btn:hover { background: linear-gradient(90deg, rgba(155, 157, 176, .86), rgba(140, 140, 181, .9)); }
+.logout-btn .nav-icon { margin-left: auto; }
+
+.taxes-main { flex: 1; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+
+// --- Tarjetas de estadísticas ---
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.stat-card {
+  padding: 20px;
+  border: 1px solid $card-border;
+  border-radius: 16px;
+  background: $card-bg;
+  backdrop-filter: blur(20px);
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.stat-card:hover {
+  border-color: rgba(45, 212, 238, 0.4);
+  transform: translateY(-2px);
+}
+
+.stat-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.stat-icon svg { width: 19px; height: 19px; }
+.stat-icon--iva { color: $cyan; }
+.stat-icon--isr { color: #4f8ff7; }
+.stat-icon--igss { color: $purple; }
+
+.stat-label { margin: 0; color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; }
+.stat-value { margin: 4px 0 4px; font-size: 1.5rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.stat-value--muted { color: rgba(255, 255, 255, 0.4); font-size: 1.1rem; font-style: italic; }
+.stat-hint { margin: 0; color: rgba(255, 255, 255, 0.45); font-size: 0.74rem; }
+
+// --- Fila media: calculadora / acciones ---
+.mid-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 18px;
+}
+
+.panel {
+  padding: 22px;
+  border: 1px solid $card-border;
+  border-radius: 18px;
+  background: $card-bg;
+  backdrop-filter: blur(20px);
+  transition: border-color 0.18s ease;
+}
+
+.panel:hover { border-color: rgba(45, 212, 238, 0.35); }
+.panel h3 { margin: 0 0 16px; font-size: 1rem; font-weight: 700; }
+
+.calc-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.calc-form label { display: grid; gap: 6px; font-size: 0.82rem; color: rgba(255, 255, 255, 0.7); }
+
+.calc-form select, .calc-form input {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid $card-border;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font: inherit;
+}
+
+.calc-form select:focus, .calc-form input:focus {
+  outline: 0;
+  border-color: $cyan;
+  box-shadow: 0 0 0 3px rgba(45, 212, 238, 0.18);
+}
+
+.calc-form option { color: #0b1230; }
+
+.calc-error { margin: 12px 0 0; color: $bad; font-size: 0.84rem; }
+
+.calc-result {
+  display: flex;
+  gap: 24px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid $card-border;
+}
+
+.calc-result div { display: flex; flex-direction: column; gap: 4px; }
+.calc-result span { color: rgba(255, 255, 255, 0.55); font-size: 0.76rem; }
+.calc-result strong { font-size: 1.2rem; font-weight: 800; }
+.calc-amount { color: $cyan; }
+
+.panel--actions { display: flex; flex-direction: column; }
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 10px;
+  border: 1px solid $card-border;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.action-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(45, 212, 238, 0.4); transform: translateY(-1px); }
+
+.action-btn--primary {
+  background: linear-gradient(120deg, rgba(79, 143, 247, 0.28), rgba(45, 212, 238, 0.2));
+  border-color: rgba(79, 143, 247, 0.4);
+}
+.action-btn--primary:hover { border-color: rgba(79, 143, 247, 0.7); }
+
+.action-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.action-icon svg { width: 17px; height: 17px; }
+.action-text { flex: 1; min-width: 0; }
+.action-text strong { display: block; font-size: 0.9rem; }
+.action-text small { color: rgba(255, 255, 255, 0.65); font-size: 0.76rem; }
+.action-arrow { flex: none; width: 16px; height: 16px; opacity: 0.6; }
+
+.field-hint { margin: 8px 0 0; color: rgba(255, 255, 255, 0.5); font-size: 0.76rem; }
+
+// --- Tabla ---
+.panel--table { padding-bottom: 16px; }
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+
+thead th {
+  padding: 8px 10px;
+  border-bottom: 1px solid $card-border;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+tbody td { padding: 12px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+
+.tax-badge {
+  padding: 3px 10px;
+  border: 1px solid rgba(79, 143, 247, 0.5);
+  border-radius: 999px;
+  color: #8fb8ff;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.rate-cell { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.status-pill {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.status-pill--current { background: rgba(74, 222, 128, 0.16); color: $good; }
+
+.table-empty { margin: 20px 0; color: rgba(255, 255, 255, 0.55); font-size: 0.9rem; text-align: center; }
+
+// --- Estados de carga / error ---
+.state, .error-state { padding: 60px; color: rgba(255, 255, 255, 0.75); text-align: center; }
+
+.error-state {
+  border: 1px solid rgba(255, 100, 120, 0.3);
+  border-radius: 18px;
+  background: rgba(255, 80, 100, 0.08);
+}
+
+.error-state button {
+  margin-top: 12px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.16s ease;
+}
+
+.error-state button:hover { background: rgba(255, 255, 255, 0.25); }
+
+.spinner {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: $cyan;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// --- Modales ---
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(5, 8, 20, 0.72);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  width: 100%;
+  max-width: 420px;
+  padding: 26px;
+  border: 1px solid $card-border;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #171d4d, #10143a);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  animation: riseIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes riseIn { from { opacity: 0; transform: translateY(14px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.modal h3 { margin: 0 0 18px; font-size: 1.15rem; }
+.modal form { display: grid; gap: 14px; }
+.modal label { display: grid; gap: 6px; font-size: 0.85rem; color: rgba(255, 255, 255, 0.75); }
+
+.modal input, .modal select {
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid $card-border;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font: inherit;
+}
+
+.modal input:focus, .modal select:focus {
+  outline: 0;
+  border-color: $cyan;
+  box-shadow: 0 0 0 3px rgba(45, 212, 238, 0.18);
+}
+
+.modal option { color: #0b1230; }
+.modal .field-hint { margin: -6px 0 0; }
+.form-error { margin: 0; color: $bad; font-size: 0.84rem; }
+
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 6px; }
+
+.btn-secondary, .btn-primary {
+  padding: 10px 18px;
+  border: 1px solid $card-border;
+  border-radius: 9px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-secondary { background: transparent; color: rgba(255, 255, 255, 0.75); }
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.06); }
+
+.btn-primary { border-color: transparent; background: linear-gradient(120deg, #0d5f9f, #328dce); color: #fff; }
+.btn-primary:hover:not(:disabled) { filter: brightness(1.08); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+// --- Responsive ---
+@media (max-width: 1100px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .mid-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
+  .taxes-body { flex-direction: column; }
+  .sidebar { width: 100%; min-height: auto; }
+  .logout-btn { margin-top: 16px; }
+}
+
+@media (max-width: 560px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .calc-form { grid-template-columns: 1fr; }
+}
