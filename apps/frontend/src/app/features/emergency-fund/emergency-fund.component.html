@@ -1,0 +1,253 @@
+<div class="fund-shell">
+  <header class="fund-header">
+    <button
+      type="button"
+      class="menu-toggle"
+      [attr.aria-label]="isMenuOpen ? 'Cerrar menú' : 'Abrir menú'"
+      (click)="toggleMenu()"
+    >
+      <img src="/despliegue.png" alt="" class="menu-icon" [class.menu-icon--open]="isMenuOpen" />
+    </button>
+    <div class="brand">
+      <img src="/numora-logo.png" alt="NUMORA" class="brand-logo" />
+    </div>
+    <h1 class="page-title">Fondo de emergencia</h1>
+  </header>
+
+  <div class="fund-body">
+    <aside class="sidebar" *ngIf="isMenuOpen">
+      <div class="sidebar-profile" *ngIf="user">
+        <img class="avatar" src="/user-avatar.png" alt="Foto de perfil" />
+        <p class="sidebar-welcome">Bienvenido, {{ user.fullName }}</p>
+      </div>
+
+      <nav class="sidebar-nav">
+        <section class="nav-group">
+          <h2 class="nav-group-title">Principal</h2>
+          <ul>
+            <li class="nav-item">
+              <a routerLink="/dashboard">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                </svg>
+                <span>Resumen</span>
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        <section class="nav-group">
+          <h2 class="nav-group-title">Transacciones</h2>
+          <ul>
+            <li class="nav-item">
+              <a routerLink="/ingresos">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 15V9M9 12l3-3 3 3" />
+                </svg>
+                <span>Ingresos</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/gastos">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 9v6M9 12l3 3 3-3" />
+                </svg>
+                <span>Gastos</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/presupuestos">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="10" width="4" height="10" rx="1" />
+                  <rect x="10" y="4" width="4" height="16" rx="1" />
+                  <rect x="16" y="13" width="4" height="7" rx="1" />
+                </svg>
+                <span>Presupuestos</span>
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        <section class="nav-group">
+          <h2 class="nav-group-title">Ahorro e impuestos</h2>
+          <ul>
+            <li class="nav-item">
+              <a routerLink="/impuestos">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="4" y="2" width="16" height="20" rx="2" />
+                  <rect x="7" y="5" width="10" height="4" rx="1" />
+                  <circle cx="8" cy="13" r="0.8" fill="currentColor" stroke="none" />
+                  <circle cx="12" cy="13" r="0.8" fill="currentColor" stroke="none" />
+                  <circle cx="16" cy="13" r="0.8" fill="currentColor" stroke="none" />
+                  <circle cx="8" cy="17" r="0.8" fill="currentColor" stroke="none" />
+                  <circle cx="12" cy="17" r="0.8" fill="currentColor" stroke="none" />
+                  <circle cx="16" cy="17" r="0.8" fill="currentColor" stroke="none" />
+                </svg>
+                <span>Impuestos</span>
+              </a>
+            </li>
+            <li class="nav-item nav-item--active">
+              <a routerLink="/fondo-de-emergencia">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 12a8 8 0 0 1 16 0" />
+                  <path d="M12 12v7a2 2 0 0 1-4 0" />
+                  <line x1="12" y1="4" x2="12" y2="6" />
+                </svg>
+                <span>Fondo de emergencia</span>
+              </a>
+            </li>
+          </ul>
+        </section>
+
+        <section class="nav-group">
+          <h2 class="nav-group-title">Análisis</h2>
+          <ul>
+            <li class="nav-item">
+              <a routerLink="/reportes">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 17 8 12 12 16 20 8" />
+                  <polyline points="14 8 20 8 20 14" />
+                </svg>
+                <span>Reportes</span>
+              </a>
+            </li>
+          </ul>
+        </section>
+      </nav>
+
+      <button type="button" class="logout-btn" (click)="logout()">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        <span>Cerrar sesión</span>
+      </button>
+    </aside>
+
+    <main class="fund-main">
+      <section *ngIf="isLoading" class="state">
+        <span class="spinner"></span>
+        <p>Cargando tu fondo de emergencia...</p>
+      </section>
+
+      <section *ngIf="errorMessage" class="error-state">
+        <p>{{ errorMessage }}</p>
+        <button type="button" (click)="loadAll()">Reintentar</button>
+      </section>
+
+      <ng-container *ngIf="!isLoading && !errorMessage">
+        <!-- Tarjeta principal de saldo -->
+        <section class="balance-card">
+          <div class="balance-info">
+            <p class="balance-label">Saldo actual del fondo</p>
+            <p class="balance-value">{{ formatCurrency(availableBalance) }}</p>
+            <p class="balance-sub">Dinero apartado para imprevistos, fuera de tus gastos normales.</p>
+          </div>
+          <div class="balance-actions">
+            <button type="button" class="fund-btn fund-btn--deposit" (click)="openMovementForm('DEPOSIT')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+              Depositar
+            </button>
+            <button type="button" class="fund-btn fund-btn--withdraw" (click)="openMovementForm('WITHDRAWAL')" [disabled]="availableBalance <= 0">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+              Retirar
+            </button>
+          </div>
+        </section>
+
+        <!-- Tarjetas de totales -->
+        <section class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-icon stat-icon--deposit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+            </div>
+            <p class="stat-label">Total depositado (histórico)</p>
+            <p class="stat-value">{{ formatCurrency(totalDeposited) }}</p>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon stat-icon--withdraw">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+            </div>
+            <p class="stat-label">Total retirado (histórico)</p>
+            <p class="stat-value">{{ formatCurrency(totalWithdrawn) }}</p>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon stat-icon--count">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 8 12 12 16 20 8" /><polyline points="14 8 20 8 20 14" /></svg>
+            </div>
+            <p class="stat-label">Movimientos registrados</p>
+            <p class="stat-value">{{ movements.length }}</p>
+          </article>
+        </section>
+
+        <!-- Historial -->
+        <section class="panel panel--table">
+          <h3>Historial de movimientos</h3>
+
+          <div class="table-wrap" *ngIf="movements.length; else emptyTable">
+            <table>
+              <thead>
+                <tr><th>Fecha</th><th>Tipo</th><th>Descripción</th><th>Monto</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let m of visibleMovements">
+                  <td>{{ m.date | date:'dd MMM yyyy' }}</td>
+                  <td>
+                    <span class="type-badge" [class.type-badge--deposit]="m.type === 'DEPOSIT'" [class.type-badge--withdraw]="m.type === 'WITHDRAWAL'">
+                      {{ movementLabel(m.type) }}
+                    </span>
+                  </td>
+                  <td>{{ m.description || '—' }}</td>
+                  <td class="amount-cell" [class.amount-cell--deposit]="m.type === 'DEPOSIT'" [class.amount-cell--withdraw]="m.type === 'WITHDRAWAL'">
+                    {{ m.type === 'DEPOSIT' ? '+' : '−' }}{{ formatCurrency(m.amount) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <ng-template #emptyTable>
+            <p class="table-empty">Todavía no tienes movimientos. Haz tu primer depósito para empezar a ahorrar.</p>
+          </ng-template>
+
+          <button type="button" class="show-more" *ngIf="movements.length > 8" (click)="showAll = !showAll">
+            {{ showAll ? 'Ver menos' : 'Ver todos los movimientos' }} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6" /></svg>
+          </button>
+        </section>
+      </ng-container>
+    </main>
+  </div>
+</div>
+
+<!-- Modal: depositar / retirar -->
+<div class="modal-backdrop" *ngIf="showMovementForm" (click)="closeMovementForm()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>{{ movementMode === 'DEPOSIT' ? 'Depositar al fondo' : 'Retirar del fondo' }}</h3>
+    <form [formGroup]="movementForm" (ngSubmit)="submitMovement()">
+      <label>
+        <span>Monto (Q)</span>
+        <input type="number" step="0.01" min="0.01" formControlName="amount" placeholder="0.00" />
+      </label>
+      <p class="field-hint" *ngIf="movementMode === 'WITHDRAWAL'">Tienes disponible {{ formatCurrency(availableBalance) }}.</p>
+      <label>
+        <span>Descripción (opcional)</span>
+        <input type="text" formControlName="description" placeholder="Ej. Reparación del carro" />
+      </label>
+      <p class="form-error" *ngIf="formError">{{ formError }}</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" (click)="closeMovementForm()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="movementForm.invalid || isSubmitting">
+          {{ isSubmitting ? 'Guardando...' : (movementMode === 'DEPOSIT' ? 'Confirmar depósito' : 'Confirmar retiro') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
