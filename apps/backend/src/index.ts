@@ -3,6 +3,7 @@ import express from 'express';
 import { authRoutes } from './auth/auth.routes.js';
 import { incomeRoutes } from './income/income.routes.js';
 import { expensesRoutes } from './expenses/expenses.routes.js';
+import { budgetsRoutes } from './budgets/budgets.routes.js';
 
 // Módulos adelantados (taxes, emergency-fund, dashboard, reports, users)
 // quedan desconectados temporalmente mientras el proyecto vuelve a una base
@@ -41,6 +42,7 @@ app.get('/', (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/income', incomeRoutes);
 app.use('/expenses', expensesRoutes);
+app.use('/budgets', budgetsRoutes);
 
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);

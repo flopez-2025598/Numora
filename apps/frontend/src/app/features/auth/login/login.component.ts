@@ -188,6 +188,23 @@ export class LoginComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.initGoogleButton();
+  }
+
+  // El script de Google (index.html) carga con async/defer, así que puede
+  // que todavía no esté listo cuando Angular llega a ngAfterViewInit.
+  // Reintenta unas cuantas veces antes de rendirse, en vez de asumir que
+  // "google" ya existe.
+  private initGoogleButton(retriesLeft = 20): void {
+    if (typeof google === 'undefined' || !google.accounts?.id) {
+      if (retriesLeft <= 0) {
+        console.error('No se pudo cargar el botón de Google: el script de Google nunca terminó de cargar.');
+        return;
+      }
+      setTimeout(() => this.initGoogleButton(retriesLeft - 1), 150);
+      return;
+    }
+
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
       callback: this.handleGoogleSignIn.bind(this),
