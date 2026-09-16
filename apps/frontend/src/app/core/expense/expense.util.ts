@@ -9,7 +9,7 @@ export interface CategorySlice {
 
 // Paleta para la gráfica de gastos por categoría. Se asigna por orden de
 // mayor a menor monto; las categorías llamadas "Otros" siempre usan el gris.
-const PALETTE = [
+export const PALETTE = [
   '#3b82f6', '#22d3ee', '#8b5cf6', '#a855f7', '#f4728f',
   '#f5a742', '#34d399', '#f472b6', '#60a5fa', '#c084fc',
 ];
@@ -27,12 +27,19 @@ export function buildCategoryBreakdown(
   for (const expense of expenses) {
     totals.set(expense.categoryName, (totals.get(expense.categoryName) ?? 0) + Number(expense.amount));
   }
+  return buildCategorySlicesFromTotals([...totals.entries()].map(([name, total]) => ({ name, total })));
+}
 
-  const grandTotal = [...totals.values()].reduce((acc, value) => acc + value, 0);
+/**
+ * Igual que buildCategoryBreakdown, pero a partir de totales ya calculados
+ * (por ejemplo, los que devuelve /reports/expenses del backend ya agregados
+ * por período) en vez de una lista cruda de gastos.
+ */
+export function buildCategorySlicesFromTotals(items: { name: string; total: number }[]): CategorySlice[] {
+  const grandTotal = items.reduce((acc, item) => acc + item.total, 0);
 
   let paletteIndex = 0;
-  return [...totals.entries()]
-    .map(([name, total]) => ({ name, total }))
+  return [...items]
     .sort((a, b) => b.total - a.total)
     .map(({ name, total }) => {
       const isOther = name.trim().toLowerCase().startsWith('otros');
