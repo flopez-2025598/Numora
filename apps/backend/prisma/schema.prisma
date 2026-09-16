@@ -52,6 +52,7 @@ model User {
   incomes           Income[]
   expenseCategories ExpenseCategory[]
   expenses          Expense[]
+  budgets           Budget[]
   taxParameters     UserTaxParameter[]
   emergencyFund     EmergencyFund?
 }
@@ -91,6 +92,7 @@ model ExpenseCategory {
   createdAt DateTime @default(now())
 
   expenses Expense[]
+  budgets  Budget[]
 }
 
 model Expense {
@@ -104,6 +106,22 @@ model Expense {
   description String?
   date        DateTime
   createdAt   DateTime        @default(now())
+}
+
+// Presupuestos: un límite de gasto por categoría, para un mes/año dado.
+model Budget {
+  id         Int             @id @default(autoincrement())
+  userId     Int
+  user       User            @relation(fields: [userId], references: [id])
+  categoryId Int
+  category   ExpenseCategory @relation(fields: [categoryId], references: [id])
+  amount     Decimal         @db.Decimal(14, 2)
+  month      Int
+  year       Int
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@unique([userId, categoryId, month, year])
 }
 
 // Taxes 

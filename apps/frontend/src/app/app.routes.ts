@@ -4,6 +4,7 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { IncomeComponent } from './features/income/income.component';
 import { ExpensesComponent } from './features/expenses/expenses.component';
+import { BudgetsComponent } from './features/budgets/budgets.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -20,6 +21,11 @@ export const routes: Routes = [
   {
     path: 'gastos',
     component: ExpensesComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'presupuestos',
+    component: BudgetsComponent,
     canActivate: [authGuard],
   },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
